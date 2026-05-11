@@ -130,7 +130,7 @@ Géré dans `services/alertes.js`, partagé entre le Dashboard, la page Clients 
 | `depasse` | 90–100% | Toast orange/rouge |
 | `surplus` | > 100% | Toast rouge foncé |
 
-Les toasts apparaissent en bas à droite au chargement de la page (style Windows 11) et se ferment automatiquement après 5 secondes. La cloche dans la topbar affiche le nombre d'alertes actives.
+Les toasts apparaissent et se ferment automatiquement après 1 minute. La cloche dans la topbar affiche le nombre d'alertes actives.
 
 ---
 
