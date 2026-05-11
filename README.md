@@ -1,29 +1,8 @@
 # Innov'HSE — Outil de pilotage
 
-Outil de planification et de suivi des missions HSE, développé en stage de 10 semaines.
+Outil de gestion et de planification des missions HSE développé en stage de 10 semaines (BUT MMI).
 
-Avant cet outil, tout passait par Excel et Outlook séparément, sans vue consolidée ni alertes. L'idée c'était de centraliser ça en un seul endroit.
-
----
-
-## Ce que fait l'appli
-
-- Planning mensuel de l'équipe avec vue calendrier (desktop) et vue liste (mobile)
-- Suivi des contrats clients avec alertes quand on approche ou dépasse le nombre de jours prévu
-- Tableau de bord avec graphiques de taux de charge
-- Gestion des missions par consultant
-- Synchronisation Outlook via Microsoft Graph API (lecture des calendriers)
-
----
-
-## Stack
-
-- Vue.js 3 + Vue Router
-- SCSS (un fichier par page)
-- Chart.js pour les graphiques
-- localStorage pour les données
-- Microsoft Graph API pour Outlook
-- Vite
+Avant cet outil, la gestion des missions, du plan de charge et des clients se faisait manuellement sur Excel et Outlook sans vue consolidée. L'objectif est de centraliser tout ça en un seul endroit.
 
 ---
 
@@ -36,12 +15,56 @@ npm run dev
 
 Accessible sur `http://localhost:5173`
 
-Les données de démo se chargent automatiquement au premier lancement.
+### Build production
 
-**Comptes de démo** (mot de passe : `demo1234`) :
-- `demo@innov-hse.fr` — administrateur
-- `andrea@innov-hse.fr` — consultant
-- `antonin@innov-hse.fr` — consultant
+```bash
+npm run build
+```
+
+Copier le `.htaccess` dans le dossier `dist/` après le build pour que Vue Router fonctionne correctement sur le serveur.
+
+---
+
+## Comptes de démo
+
+Au premier lancement les données et comptes sont créés automatiquement.
+
+| Email | Mot de passe | Rôle |
+|-------|--------------|------|
+| demo@innov-hse.fr | demo1234 | Administrateur |
+| andrea@innov-hse.fr | demo1234 | Consultant |
+| antonin@innov-hse.fr | demo1234 | Consultant |
+
+---
+
+## Pages
+
+| Page | Route | Description |
+|------|-------|-------------|
+| Connexion | `/connexion` | Login avec sélection de profil |
+| Inscription | `/inscription` | Création de compte |
+| Tableau de bord | `/dashboard` | KPIs, graphiques, alertes pop-up |
+| Planning | `/planning` | Calendrier mensuel + données réelles + vue trimestrielle |
+| Prospects | `/prospects` | Suivi des contacts avant signature |
+| Clients | `/clients` | Contrats, avancement, alertes dépassement |
+| Fiche client | `/clients/:id` | Détail d'un client avec toutes ses missions |
+| Missions / Tâches | `/missions` | Saisie et validation des tâches |
+| Équipe | `/employes` | Consultants, taux de charge, capacité |
+| Facturation | `/facturation` | Saisie manuelle théorique / réel / objectif / facturé |
+
+---
+
+## Stack technique
+
+| Technologie | Usage |
+|-------------|-------|
+| Vue.js 3 | Framework frontend (Composition API) |
+| Vue Router | Navigation entre les pages |
+| SCSS | Styles modulaires — un fichier par page |
+| Chart.js | Graphiques du tableau de bord |
+| localStorage | Stockage des données |
+| Microsoft Graph API | Synchronisation Outlook (configurée, en attente accès Azure) |
+| Vite | Build tool |
 
 ---
 
@@ -49,44 +72,111 @@ Les données de démo se chargent automatiquement au premier lancement.
 
 ```
 src/
-├── views/          pages de l'appli
-├── components/     Sidebar.vue
-├── services/       alertes.js, outlook.js
-├── data/           données de démo (JSON)
-└── scss/           un fichier par page + _layout.scss partagé
+├── main.js                  point d'entrée + versioning des données
+├── App.vue                  router-view + écran de connexion
+├── router/index.js          toutes les routes + garde de navigation
+│
+├── components/
+│   ├── Sidebar.vue          navigation + burger mobile + cloche alertes
+│   └── ToastAlertes.vue     notifications style Windows 11 (bas droite)
+│
+├── views/
+│   ├── Connexion.vue
+│   ├── Inscription.vue
+│   ├── Dashboard.vue        KPIs + 3 graphiques + pop-up alertes
+│   ├── Planning.vue         calendrier + liste mobile + données réelles
+│   ├── Prospects.vue        CRM léger avant signature client
+│   ├── Clients.vue          liste clients + alertes dépassement
+│   ├── FicheClient.vue      détail client + historique missions
+│   ├── Missions.vue         missions/tâches + heures fractionnées
+│   ├── Employes.vue         équipe + taux de charge
+│   └── Facturation.vue      suivi financier par client
+│
+├── services/
+│   ├── alertes.js           logique centralisée des alertes (3 niveaux)
+│   ├── db.js                CRUD localStorage + import Outlook
+│   └── outlook.js           connexion Microsoft Graph API
+│
+├── data/
+│   ├── employes.json        données de démo
+│   ├── clients.json         21 vrais clients (Carbonex, Wintzenmann...)
+│   └── missions.json        missions Avril / Mai / Juin 2026
+│
+└── scss/
+    ├── styles.scss          point d'entrée — importe tout
+    ├── _layout.scss         variables, reset, composants partagés
+    ├── _sidebar.scss        sidebar + burger mobile
+    ├── _alertes.scss        toasts + bandeau + badges
+    ├── _modales.scss        modales
+    ├── _dashboard.scss
+    ├── _planning.scss
+    ├── _clients.scss
+    ├── _prospects.scss
+    ├── _missions.scss
+    ├── _employes.scss
+    ├── _connexion.scss
+    └── _inscription.scss
 ```
 
 ---
 
-## Alertes de dépassement
+## Système d'alertes
 
-Gérées dans `services/alertes.js`, elles s'affichent sur le dashboard et la page clients.
+Géré dans `services/alertes.js`, partagé entre le Dashboard, la page Clients et le Planning.
 
-| Niveau | Seuil |
-|--------|-------|
-| attention | 70–90% du contrat consommé |
-| dépassé | 90–100% |
-| surplus | au-delà du contrat |
+| Niveau | Seuil | Affichage |
+|--------|-------|-----------|
+| `attention` | 70–90% du contrat consommé | Toast jaune |
+| `depasse` | 90–100% | Toast orange/rouge |
+| `surplus` | > 100% | Toast rouge foncé |
+
+Les toasts apparaissent en bas à droite au chargement de la page (style Windows 11) et se ferment automatiquement après 5 secondes. La cloche dans la topbar affiche le nombre d'alertes actives.
 
 ---
 
-## Config Outlook
+## Formules Planning — données réelles
 
-Dans `services/outlook.js`, remplacer :
+```
+Jours planifiés + Jours à planifier = Jours dûs
+Jours non chargés + Jours dûs       = Jours ouvrés ✓
+```
+
+Le tableau affiche une vue par mois et une vue trimestrielle (toggle).
+
+---
+
+## Mise à jour des données
+
+Dans `main.js`, changer le numéro de version pour forcer la réinitialisation des données au prochain chargement :
+
+```js
+const VERSION_DONNEES = '1.3' // ← incrémenter ici
+```
+
+Les comptes de connexion ne sont jamais écrasés.
+
+---
+
+## Config Outlook (Graph API)
+
+Dans `services/outlook.js`, renseigner après enregistrement sur portal.azure.com :
+
 ```js
 clientId: 'VOTRE_CLIENT_ID_AZURE'
 authority: 'https://login.microsoftonline.com/VOTRE_TENANT_ID'
 ```
 
-L'app doit être enregistrée sur portal.azure.com avec la permission `Calendars.Read`.
+Permission requise : `Calendars.Read`
 
 ---
 
-## Ce qui reste à faire (v2)
+## Roadmap v2
 
-- Sync Outlook en écriture (bidirectionnelle)
-- Page facturation avec écarts théorique/réel
-- Export PDF et Excel
-- Migration vers Firebase pour le multi-utilisateurs en temps réel
-- Questionnaire satisfaction client
-- Objectifs financiers
+- [ ] Sync Outlook en écriture (bidirectionnelle)
+- [ ] Export PDF et Excel par client
+- [ ] Questionnaire satisfaction client paramétrable
+- [ ] Objectifs financiers avec plan d'action
+- [ ] Migration localStorage → Firebase (multi-utilisateurs temps réel)
+- [ ] Interfaces séparées admin / consultant
+- [ ] Pages personnalisées par consultant
+
