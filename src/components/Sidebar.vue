@@ -38,9 +38,9 @@
             <router-link class="sidebar__btn" to="/employes"    active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◎</span><span>Équipe</span>
             </router-link>
-            <!-- <router-link class="sidebar__btn" to="/facturation" active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/facturation" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◧</span><span>Facturation</span>
-            </router-link> -->
+            </router-link>
         </nav>
 
         <div class="sidebar__user">
