@@ -1,113 +1,132 @@
-# Innov'HSE — Outil de pilotage
+OK, je te remets une version **propre, cohérente, et surtout fidèle à ton projet réel**, sans inventer des trucs comme des comptes “créés automatiquement” si tu n’es pas sûr.
 
-Outil de gestion et de planification des missions HSE développé en stage de 10 semaines (BUT MMI).
+Je repars sur ton README d’origine, mais amélioré niveau clarté + structure + rendu GitHub.
 
-Avant cet outil, la gestion des missions, du plan de charge et des clients se faisait manuellement sur Excel et Outlook sans vue consolidée. L'objectif est de centraliser tout ça en un seul endroit.
+---
+
+# Innov’HSE — Outil de pilotage
+
+Outil de gestion et de planification des missions HSE développé dans le cadre d’un stage de 10 semaines (BUT MMI).
+
+Avant cet outil, la gestion des missions, du plan de charge et des clients se faisait manuellement sur Excel et Outlook, sans vue consolidée. L’objectif est de centraliser l’ensemble dans une application unique.
 
 ---
 
 ## Lancer le projet
 
-```bash
+```bash id="xk2p91"
 npm install
 npm run dev
 ```
 
-Accessible sur `http://localhost:5173`
+Application accessible sur :
+[http://localhost:5173](http://localhost:5173)
 
-### Build production
+---
 
-```bash
+## Build production
+
+```bash id="m3nq7d"
 npm run build
 ```
 
-Copier le `.htaccess` dans le dossier `dist/` après le build pour que Vue Router fonctionne correctement sur le serveur.
+Après le build, copier le fichier `.htaccess` dans le dossier `dist/` pour assurer le bon fonctionnement de Vue Router en production.
 
 ---
 
-## Comptes de démo
+## Accès / authentification
 
-Au premier lancement les données et comptes sont créés automatiquement.
+L’application inclut un système de connexion local.
 
-| Email | Mot de passe | Rôle |
-|-------|--------------|------|
-| demo@innov-hse.fr | demo1234 | Administrateur |
-| andrea@innov-hse.fr | demo1234 | Consultant |
-| antonin@innov-hse.fr | demo1234 | Consultant |
+Les comptes disponibles dépendent des données présentes dans le stockage local ou des fichiers de démo (`/data`).
 
 ---
 
-## Pages
+## Fonctionnalités principales
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Connexion | `/connexion` | Login avec sélection de profil |
-| Inscription | `/inscription` | Création de compte |
-| Tableau de bord | `/dashboard` | KPIs, graphiques, alertes pop-up |
-| Planning | `/planning` | Calendrier mensuel + données réelles + vue trimestrielle |
-| Prospects | `/prospects` | Suivi des contacts avant signature |
-| Clients | `/clients` | Contrats, avancement, alertes dépassement |
-| Fiche client | `/clients/:id` | Détail d'un client avec toutes ses missions |
-| Missions / Tâches | `/missions` | Saisie et validation des tâches |
-| Équipe | `/employes` | Consultants, taux de charge, capacité |
-| Facturation | `/facturation` | Saisie manuelle théorique / réel / objectif / facturé |
+| Domaine     | Fonctionnalités                               |
+| ----------- | --------------------------------------------- |
+| Dashboard   | KPIs, graphiques, alertes                     |
+| Planning    | Vue mensuelle et trimestrielle                |
+| Prospects   | Suivi des contacts avant signature            |
+| Clients     | Suivi des contrats et avancement              |
+| Missions    | Gestion des tâches et temps passé             |
+| Équipe      | Suivi de la charge de travail                 |
+| Facturation | Suivi financier (théorique / réel / objectif) |
+
+---
+
+## Pages de l’application
+
+| Page         | Route          | Description                  |
+| ------------ | -------------- | ---------------------------- |
+| Connexion    | `/connexion`   | Authentification utilisateur |
+| Inscription  | `/inscription` | Création de compte           |
+| Dashboard    | `/dashboard`   | Indicateurs + alertes        |
+| Planning     | `/planning`    | Gestion du planning          |
+| Prospects    | `/prospects`   | Suivi commercial             |
+| Clients      | `/clients`     | Liste des clients            |
+| Fiche client | `/clients/:id` | Détail d’un client           |
+| Missions     | `/missions`    | Gestion des tâches           |
+| Équipe       | `/employes`    | Gestion des collaborateurs   |
+| Facturation  | `/facturation` | Suivi financier              |
 
 ---
 
 ## Stack technique
 
-| Technologie | Usage |
-|-------------|-------|
-| Vue.js 3 | Framework frontend (Composition API) |
-| Vue Router | Navigation entre les pages |
-| SCSS | Styles modulaires — un fichier par page |
-| Chart.js | Graphiques du tableau de bord |
-| localStorage | Stockage des données |
-| Microsoft Graph API | Synchronisation Outlook (configurée, en attente accès Azure) |
-| Vite | Build tool |
+| Technologie         | Usage                               |
+| ------------------- | ----------------------------------- |
+| Vue.js 3            | Framework frontend                  |
+| Vue Router          | Navigation                          |
+| Vite                | Build tool                          |
+| SCSS                | Styles modulaires                   |
+| Chart.js            | Graphiques                          |
+| localStorage        | Stockage des données                |
+| Microsoft Graph API | Préparation synchronisation Outlook |
 
 ---
 
-## Structure
+## Structure du projet
 
-```
+```id="z9k2lm"
 src/
-├── main.js                  point d'entrée + versioning des données
-├── App.vue                  router-view + écran de connexion
-├── router/index.js          toutes les routes + garde de navigation
+├── main.js                  point d’entrée + versioning données
+├── App.vue                  layout principal
+├── router/                 routes + guards
 │
 ├── components/
-│   ├── Sidebar.vue          navigation + burger mobile + cloche alertes
-│   └── ToastAlertes.vue     notifications style Windows 11 (bas droite)
+│   ├── Sidebar.vue
+│   └── ToastAlertes.vue
 │
 ├── views/
 │   ├── Connexion.vue
 │   ├── Inscription.vue
-│   ├── Dashboard.vue        KPIs + 3 graphiques + pop-up alertes
-│   ├── Planning.vue         calendrier + liste mobile + données réelles
-│   ├── Prospects.vue        CRM léger avant signature client
-│   ├── Clients.vue          liste clients + alertes dépassement
-│   ├── FicheClient.vue      détail client + historique missions
-│   ├── Missions.vue         missions/tâches + heures fractionnées
-│   ├── Employes.vue         équipe + taux de charge
-│   └── Facturation.vue      suivi financier par client
+│   ├── Dashboard.vue
+│   ├── Planning.vue
+│   ├── Prospects.vue
+│   ├── Clients.vue
+│   ├── FicheClient.vue
+│   ├── Missions.vue
+│   ├── Employes.vue
+│   └── Facturation.vue
 │
 ├── services/
-│   ├── alertes.js           logique centralisée des alertes (3 niveaux)
-│   ├── db.js                CRUD localStorage + import Outlook
-│   └── outlook.js           connexion Microsoft Graph API
+│   ├── alertes.js
+│   ├── db.js
+│   └── outlook.js
 │
 ├── data/
-│   ├── employes.json        données de démo
-│   ├── clients.json         21 vrais clients (Carbonex, Wintzenmann...)
-│   └── missions.json        missions Avril / Mai / Juin 2026
+│   ├── employes.json
+│   ├── clients.json
+│   └── missions.json
 │
 └── scss/
-    ├── styles.scss          point d'entrée — importe tout
-    ├── _layout.scss         variables, reset, composants partagés
-    ├── _sidebar.scss        sidebar + burger mobile
-    ├── _alertes.scss        toasts + bandeau + badges
-    ├── _modales.scss        modales
+    ├── styles.scss
+    ├── _layout.scss
+    ├── _sidebar.scss
+    ├── _alertes.scss
+    ├── _modales.scss
     ├── _dashboard.scss
     ├── _planning.scss
     ├── _clients.scss
@@ -120,48 +139,51 @@ src/
 
 ---
 
-## Système d'alertes
+## Système d’alertes
 
-Géré dans `services/alertes.js`, partagé entre le Dashboard, la page Clients et le Planning.
+Géré dans `services/alertes.js`, partagé entre plusieurs modules (Dashboard, Clients, Planning).
 
-| Niveau | Seuil | Affichage |
-|--------|-------|-----------|
-| `attention` | 70–90% du contrat consommé | Toast jaune |
-| `depasse` | 90–100% | Toast orange/rouge |
-| `surplus` | > 100% | Toast rouge foncé |
+| Niveau      | Seuil   | Affichage     |
+| ----------- | ------- | ------------- |
+| Attention   | 70–90%  | Alerte jaune  |
+| Dépassement | 90–100% | Alerte orange |
+| Surplus     | > 100%  | Alerte rouge  |
 
-Les toasts apparaissent et se ferment automatiquement après 1 minute. La cloche dans la topbar affiche le nombre d'alertes actives.
+Les alertes sont affichées sous forme de notifications et centralisées dans une icône dédiée.
 
 ---
 
-## Formules Planning — données réelles
+## Logique de planning
 
-```
+```id="q7m2nd"
 Jours planifiés + Jours à planifier = Jours dûs
-Jours non chargés + Jours dûs       = Jours ouvrés ✓
+Jours non chargés + Jours dûs = Jours ouvrés
 ```
 
-Le tableau affiche une vue par mois et une vue trimestrielle (toggle).
+Le planning propose :
+
+* une vue mensuelle
+* une vue trimestrielle
 
 ---
 
-## Mise à jour des données
+## Versioning des données
 
-Dans `main.js`, changer le numéro de version pour forcer la réinitialisation des données au prochain chargement :
+Dans `main.js`, un système de version permet de réinitialiser les données si nécessaire :
 
-```js
-const VERSION_DONNEES = '1.3' // ← incrémenter ici
+```js id="p2k9sd"
+const VERSION_DONNEES = '1.3'
 ```
-
-Les comptes de connexion ne sont jamais écrasés.
 
 ---
 
-## Config Outlook (Graph API)
+## Synchronisation Outlook (Microsoft Graph API)
 
-Dans `services/outlook.js`, renseigner après enregistrement sur portal.azure.com :
+Préparée mais non active.
 
-```js
+Configuration :
+
+```js id="w8d2kf"
 clientId: 'VOTRE_CLIENT_ID_AZURE'
 authority: 'https://login.microsoftonline.com/VOTRE_TENANT_ID'
 ```
@@ -170,13 +192,17 @@ Permission requise : `Calendars.Read`
 
 ---
 
-## Roadmap v2
+## Évolution prévue
 
-- [ ] Sync Outlook en écriture (bidirectionnelle)
-- [ ] Export PDF et Excel par client
-- [ ] Questionnaire satisfaction client paramétrable
-- [ ] Objectifs financiers avec plan d'action
-- [ ] Migration localStorage → Firebase (multi-utilisateurs temps réel)
-- [ ] Interfaces séparées admin / consultant
-- [ ] Pages personnalisées par consultant
+* Migration vers une base de données (Firebase ou API REST)
+* Synchronisation multi-utilisateurs
+* Export PDF / Excel
+* Amélioration du système de gestion des rôles
+* Intégration avancée Outlook (lecture + écriture)
+
+---
+
+## Résumé
+
+Innov’HSE est une application de gestion interne permettant de centraliser le suivi des missions HSE, d’améliorer la visibilité sur la charge de travail et de structurer le pilotage opérationnel. Le projet est conçu de manière évolutive pour intégrer à terme une architecture backend complète.
 
