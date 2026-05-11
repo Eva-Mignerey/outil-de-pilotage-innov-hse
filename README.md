@@ -1,9 +1,3 @@
-OK, je te remets une version **propre, cohérente, et surtout fidèle à ton projet réel**, sans inventer des trucs comme des comptes “créés automatiquement” si tu n’es pas sûr.
-
-Je repars sur ton README d’origine, mais amélioré niveau clarté + structure + rendu GitHub.
-
----
-
 # Innov’HSE — Outil de pilotage
 
 Outil de gestion et de planification des missions HSE développé dans le cadre d’un stage de 10 semaines (BUT MMI).
