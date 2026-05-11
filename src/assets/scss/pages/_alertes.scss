@@ -1,0 +1,148 @@
+@import '../layout';
+
+.alertes-bandeau {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.alerte {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    border-left: 4px solid;
+
+    &--attention {
+        background: rgba($jaune, 0.15);
+        border-left-color: $jaune;
+        color: darken($jaune, 35%);
+    }
+
+    &--depasse {
+        background: rgba($rouge-danger, 0.1);
+        border-left-color: $rouge-danger;
+        color: $rouge-danger;
+    }
+
+    &--surplus {
+        background: rgba($rouge-danger, 0.18);
+        border-left-color: darken($rouge-danger, 10%);
+        color: darken($rouge-danger, 10%);
+        font-weight: 600;
+    }
+}
+
+.alerte__client  { font-weight: 700; min-width: 100px; }
+.alerte__message { flex: 1; }
+
+// Badges dans les tableaux
+.badge--alerte-attention { background: rgba($orange, 0.25); color: darken($orange, 35%); }
+.badge--alerte-depasse   { background: rgba($rouge-danger, 0.12); color: $rouge-danger; }
+.badge--alerte-surplus   { background: rgba($rouge-danger, 0.2);  color: darken($rouge-danger, 10%); font-weight: 700; }
+
+// ================================
+// Pop-up alerte — Dashboard
+// ================================
+
+// Bandeau pop-up en haut de page (pas une modale, reste visible)
+.popup-alerte {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: $rayon-carte;
+    font-family: $font-moyenne;
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+    border-left: 5px solid;
+    animation: slideDown 0.3s ease;
+
+    &--attention {
+        background: rgba($jaune, 0.15);
+        border-left-color: $jaune;
+        color: darken($jaune, 35%);
+    }
+
+    &--depasse {
+        background: rgba($rouge-danger, 0.1);
+        border-left-color: $rouge-danger;
+        color: $rouge-danger;
+    }
+
+    &--surplus {
+        background: rgba($rouge-danger, 0.2);
+        border-left-color: darken($rouge-danger, 10%);
+        color: darken($rouge-danger, 10%);
+    }
+}
+
+.popup-alerte__icone {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.popup-alerte__contenu { flex: 1; }
+
+.popup-alerte__titre {
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.popup-alerte__message { font-size: 0.83rem; }
+
+.popup-alerte__plus {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-top: 3px;
+}
+
+.popup-alerte__fermer {
+    background: none;
+    font-size: 1rem;
+    opacity: 0.6;
+    cursor: pointer;
+    flex-shrink: 0;
+    &:hover { opacity: 1; }
+}
+
+// Liste pop-up quand on clique sur le KPI alertes
+.popup-liste-fond {
+    position: fixed;
+    inset: 0;
+    background: rgba($noir, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+}
+
+.popup-liste {
+    background: $blanc;
+    border-radius: $rayon-carte;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 12px 40px rgba($noir, 0.2);
+
+    &__entete {
+        padding: 18px 22px 14px;
+        border-bottom: 1px solid $bordure;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h2 { font-family: $font-titre; font-size: 1rem; color: $bleu-fonce; }
+    }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+

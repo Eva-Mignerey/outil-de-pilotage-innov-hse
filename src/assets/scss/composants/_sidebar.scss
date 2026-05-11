@@ -1,0 +1,170 @@
+@import '../_layout';
+
+.layout__sidebar {
+    width: $sidebar-largeur;
+    background: $bleu-fonce;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+// logo
+.sidebar__logo {
+    background: $blanc;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar__logo-img {
+    width: 100%;
+    max-width: 190px;
+}
+
+// nav
+.sidebar__nav {
+    flex: 1;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar__btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    border-radius: $rayon;
+    background: rgba($blanc, 0.08);
+    color: $blanc;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all $transition;
+
+    &:hover {
+        background: rgba($blanc, 0.18);
+    }
+
+    &.actif {
+        background: $blanc;
+        color: $bleu-fonce;
+        font-weight: 600;
+    }
+}
+
+.sidebar__icone {
+    width: 20px;
+    text-align: center;
+}
+
+// user
+.sidebar__user {
+    padding: 14px 16px;
+    border-top: 1px solid rgba($blanc, 0.15);
+}
+
+.user-nom {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: $blanc;
+}
+
+.user-role {
+    font-size: 0.72rem;
+    color: rgba($blanc, 0.55);
+}
+
+// menu burger
+.burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+
+    // les 3 traits du burger
+    span {
+        display: block;
+        height: 2.5px;
+        background: $blanc;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    // animation pour le menu burger
+    &.actif span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    &.actif span:nth-child(2) {
+        opacity: 0;
+    }
+
+    &.actif span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+}
+
+// overlay
+.burger-fond {
+    position: fixed;
+    inset: 0;
+    background: rgba($noir, 0.45);
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.burger-fond.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+// topbar version mobile
+.mobile-topbar {
+    display: none;
+}
+
+// responsive
+@media (max-width: $mobile) {
+
+    .layout__sidebar {
+        transform: translateX(-100%);
+    }
+
+    .layout__sidebar.sidebar--ouvert {
+        transform: translateX(0);
+    }
+
+    .mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        height: $topbar-hauteur;
+        background: $bleu-fonce;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    .mobile-topbar__logo {
+        height: 36px;
+        filter: brightness(0) invert(1);
+    }
+
+    .burger-fond {
+        display: block;
+    }
+}

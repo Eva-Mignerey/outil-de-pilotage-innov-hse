@@ -1,0 +1,58 @@
+@import '../layout';
+
+.prospects__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.prospects__pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: $rayon-btn;
+    font-family: $font-moyenne;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1.5px solid $bordure;
+    background: $blanc;
+    color: $gris;
+    cursor: pointer;
+    transition: all $transition;
+
+    &:hover { border-color: $bleu-fonce; color: $bleu-fonce; }
+
+    &.actif {
+        background: $bleu-fonce;
+        color: $blanc;
+        border-color: $bleu-fonce;
+    }
+
+    &--en_retard.actif { background: $rouge-danger; border-color: $rouge-danger; }
+    &--en_cours.actif { background: darken($orange, 20%); border-color: darken($orange, 20%); }
+    &--a_venir.actif { background: $bleu-clair; border-color: $bleu-clair; }
+    &--termine.actif { background: $vert; border-color: $vert; color: $noir; }
+}
+
+.prospects__pill-count {
+    background: rgba($blanc, 0.25);
+    border-radius: 99px;
+    padding: 0 6px;
+    font-size: 0.75rem;
+}
+
+.prospects__pill:not(.actif) .prospects__pill-count {
+    background: $remplissage;
+    color: $gris;
+}
+
+.prospects__carte .carte__corps { padding: 0; }
+
+@media (max-width: $mobile) {
+    .prospects__carte .tableau th:nth-child(4),
+    .prospects__carte .tableau td:nth-child(4),
+    .prospects__carte .tableau th:nth-child(5),
+    .prospects__carte .tableau td:nth-child(5) { display: none; }
+}

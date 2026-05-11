@@ -1,0 +1,53 @@
+@import '../layout';
+
+.clients__kpi {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.clients__recherche {
+    padding: 6px 12px;
+    background: $fond-input;
+    border: 1.5px solid transparent;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    color: $noir;
+    width: 200px;
+    outline: none;
+    transition: border-color $transition;
+
+    &:focus       { border-color: $bleu-clair; background: $blanc; }
+    &::placeholder { color: $gris; }
+}
+
+.clients__carte .carte__corps {
+    padding: 0;
+}
+
+.clients__nom {
+    font-family: $font-moyenne;
+    font-weight: 600;
+    color: $bleu-fonce;
+}
+
+.clients__secteur {
+    font-family: $font-moyenne;
+    font-size: 0.8rem;
+    color: $gris;
+}
+
+.clients__avancement {
+    min-width: 120px;
+}
+
+.clients__pct {
+    font-family: $font-moyenne;
+    font-size: 0.72rem;
+    color: $gris;
+    margin-top: 2px;
+}
+
+.clients__actions {
+    display: flex;
+    gap: 5px;
+}

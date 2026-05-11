@@ -1,0 +1,400 @@
+@import '../layout';
+
+.planning__nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.planning__mois {
+    font-family: $font-titre;
+    font-size: 0.95rem;
+    color: $bleu-fonce;
+    min-width: 150px;
+    text-align: center;
+}
+
+.planning__filtre {
+    padding: 6px 12px;
+    background: $fond-input;
+    border: 1.5px solid transparent;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.83rem;
+    color: $noir;
+    cursor: pointer;
+    outline: none;
+
+    &:focus { border-color: $bleu-clair; }
+}
+
+// =======================
+// TABLEAU DESKTOP
+// =======================
+
+.planning__carte .carte__corps {
+    padding: 0;
+}
+
+.planning__scroll-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.planning__tableau {
+    min-width: 700px;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.planning__col-consultant {
+    width: 110px;
+    min-width: 90px;
+}
+
+.planning__consultant {
+    padding: 8px 10px;
+    font-family: $font-moyenne;
+    font-weight: 600;
+    font-size: 0.83rem;
+    border-right: 1px solid $bordure;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.planning__taux {
+    font-family: $font-moyenne;
+    font-size: 0.7rem;
+    color: $gris;
+    margin-top: 2px;
+}
+
+.planning__en-tete-jour {
+    text-align: center;
+    padding: 4px 1px;
+    border-bottom: 1px solid $bordure;
+}
+
+.planning__jour-lettre {
+    font-family: $font-moyenne;
+    font-size: 0.6rem;
+    color: $gris;
+    font-weight: 600;
+}
+
+.planning__jour-num {
+    font-family: $font-titre;
+    font-size: 0.78rem;
+    color: $noir;
+}
+
+.planning__en-tete-jour--weekend {
+    background: $fond-page;
+    .planning__jour-lettre,
+    .planning__jour-num { color: rgba($gris, 0.5); }
+}
+
+.planning__cellule {
+    padding: 1px;
+    border: 1px solid $bordure;
+    text-align: center;
+    height: 30px;
+    overflow: hidden;
+
+    &--weekend { background: $fond-page; }
+}
+
+.planning__mission {
+    height: 24px;
+    border-radius: 4px;
+    font-family: $font-moyenne;
+    font-size: 0.58rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    color: $blanc;
+    transition: opacity $transition;
+    width: 100%;
+
+    &:hover { opacity: 0.82; }
+}
+
+// =======================
+// VUE LISTE MOBILE
+// (remplace le tableau sur petit écran)
+// =======================
+
+// Caché sur desktop, visible sur mobile
+.planning__liste-mobile {
+    display: none;
+}
+
+// Un bloc par consultant
+.planning__liste-consultant {
+    padding: 14px 16px;
+    border-bottom: 1px solid $bordure;
+
+    &:last-child { border-bottom: none; }
+}
+
+.planning__liste-nom {
+    font-family: $font-moyenne;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $bleu-fonce;
+    margin-bottom: 8px;
+}
+
+// Les missions du consultant affichées en blocs
+.planning__liste-missions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.planning__liste-mission {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: $rayon;
+    background: $fond-input;
+}
+
+.planning__liste-couleur {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.planning__liste-info {
+    flex: 1;
+}
+
+.planning__liste-titre {
+    font-family: $font-moyenne;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: $noir;
+}
+
+.planning__liste-dates {
+    font-family: $font-moyenne;
+    font-size: 0.75rem;
+    color: $gris;
+    margin-top: 2px;
+}
+
+// Message si aucune mission ce mois
+.planning__liste-vide {
+    font-family: $font-moyenne;
+    font-size: 0.82rem;
+    color: $gris;
+    font-style: italic;
+}
+
+// =======================
+// LÉGENDE
+// =======================
+
+.planning__legende {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.planning__legende-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $font-moyenne;
+    font-size: 0.82rem;
+}
+
+.planning__legende-point {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.planning__detail p {
+    font-family: $font-moyenne;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+// =======================
+// RESPONSIVE MOBILE
+// =======================
+
+@media (max-width: $mobile) {
+
+    // On cache le tableau et on affiche la liste
+    .planning__scroll-wrap { display: none; }
+    .planning__liste-mobile { display: block; }
+
+    .planning__mois {
+        min-width: 110px;
+        font-size: 0.82rem;
+    }
+}
+
+// =======================
+// ALERTES PLANNING
+// =======================
+
+// Bandeau alertes clients en haut du planning
+.planning__alertes-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.planning__alerte-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: $rayon-btn;
+    font-family: $font-moyenne;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity $transition;
+
+    &:hover { opacity: 0.85; }
+
+    &--attention {
+        background: rgba($orange, 0.2);
+        color: darken($orange, 35%);
+        border: 1.5px solid rgba($orange, 0.5);
+    }
+
+    &--depasse {
+        background: rgba($rouge-danger, 0.1);
+        color: $rouge-danger;
+        border: 1.5px solid rgba($rouge-danger, 0.3);
+    }
+
+    &--surplus {
+        background: rgba($rouge-danger, 0.2);
+        color: darken($rouge-danger, 10%);
+        border: 1.5px solid $rouge-danger;
+    }
+}
+
+// Alerte sous le nom du consultant dans le tableau
+.planning__alerte-emp {
+    font-family: $font-moyenne;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-top: 3px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    display: inline-block;
+
+    &--surplus {
+        background: rgba($rouge-danger, 0.15);
+        color: $rouge-danger;
+    }
+
+    &--plein {
+        background: rgba($vert, 0.2);
+        color: darken($vert, 30%);
+    }
+}
+
+// =======================
+// DONNÉES RÉELLES MOBILE
+// =======================
+
+// Sur mobile : on remplace le tableau par des cartes empilées
+.planning__donnees-tableau {
+    // Desktop : tableau normal
+    display: block;
+}
+
+.planning__donnees-cartes {
+    // Desktop : caché
+    display: none;
+}
+
+.planning__donnee-carte {
+    padding: 14px 16px;
+    border-bottom: 1px solid $bordure;
+
+    &:last-child { border-bottom: none; }
+}
+
+.planning__donnee-nom {
+    font-family: $font-moyenne;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: $bleu-fonce;
+    margin-bottom: 10px;
+}
+
+.planning__donnee-ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: $font-moyenne;
+    font-size: 0.82rem;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba($bordure, 0.5);
+
+    &:last-child { border-bottom: none; }
+}
+
+.planning__donnee-label { color: $gris; }
+.planning__donnee-val   { font-weight: 600; }
+
+@media (max-width: $mobile) {
+    // Cacher le tableau et afficher les cartes
+    .planning__donnees-tableau { display: none; }
+    .planning__donnees-cartes  { display: block; }
+}
+
+// =======================
+// FIX — forcer desktop/mobile
+// =======================
+
+// Desktop : s'assurer que la liste mobile est toujours cachée
+.planning__carte .planning__liste-mobile {
+    display: none !important;
+}
+
+// Desktop : données réelles — tableau visible, cartes cachées
+.planning__donnees-tableau { display: block; }
+.planning__donnees-cartes  { display: none;  }
+
+// Mobile : inverser
+@media (max-width: $mobile) {
+    .planning__carte .planning__scroll-wrap  { display: none !important; }
+    .planning__carte .planning__liste-mobile { display: block !important; }
+
+    .planning__donnees-tableau { display: none;  }
+    .planning__donnees-cartes  { display: block; }
+
+    // Empêcher le débordement de la page entière
+    .layout__main {
+        min-width: 0;
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .page {
+        padding: 12px;
+        overflow-x: hidden;
+    }
+}

@@ -1,0 +1,56 @@
+@import '../layout';
+
+.modale-fond {
+    position: fixed;
+    inset: 0;
+    background: rgba($noir, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+}
+
+.modale {
+    background: $blanc;
+    border-radius: $rayon-carte;
+    width: 100%;
+    max-width: 460px;
+    overflow: hidden;
+}
+
+.modale__entete {
+    padding: 8px 22px 8px;
+    border-bottom: 1px solid $bordure;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2 {
+        font-family: $font-titre;
+        font-size: 1rem;
+        color: $bleu-fonce;
+    }
+}
+
+.modale__corps {
+    padding: 5px 22px;
+}
+
+.modale__pied {
+    padding: 8px 22px;
+    border-top: 1px solid $bordure;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.modale__fermer {
+    font-size: 1.1rem;
+    color: $gris;
+    cursor: pointer;
+
+    &:hover {
+        color: $noir;
+    }
+}

@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "nom": "Andrea Romary",
+        "email": "a.romary@innov-hse.fr",
+        "equipe": "Troyes",
+        "capacite_jours": 218,
+        "conges_jours": 25,
+        "taux_horaire": 450,
+        "role": "consultant"
+    },
+    {
+        "id": 2,
+        "nom": "Antonin Guay Hemard",
+        "email": "a.guayhemard@innov-hse.fr",
+        "equipe": "Troyes",
+        "capacite_jours": 218,
+        "conges_jours": 25,
+        "taux_horaire": 450,
+        "role": "consultant"
+    },
+    {
+        "id": 3,
+        "nom": "Matthieu Roche",
+        "email": "m.roche@innov-hse.fr",
+        "equipe": "Troyes",
+        "capacite_jours": 218,
+        "conges_jours": 25,
+        "taux_horaire": 500,
+        "role": "admin"
+    },
+    {
+        "id": 4,
+        "nom": "Damaris Quintin",
+        "email": "d.quintin@innov-hse.fr",
+        "equipe": "Troyes",
+        "capacite_jours": 218,
+        "conges_jours": 25,
+        "taux_horaire": 500,
+        "role": "admin"
+    }
+]

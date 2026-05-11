@@ -1,0 +1,24 @@
+// layout
+@use "layout";
+
+// pages
+@use "pages/connexion";
+@use "pages/inscription";
+@use "pages/dashboard";
+@use "pages/clients";
+@use "pages/missions";
+@use "pages/planning";
+@use "pages/facturation";
+@use "pages/employes";
+@use "pages/prospects";
+
+// composants
+@use "composants/sidebar";
+@use "composants/modales";
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

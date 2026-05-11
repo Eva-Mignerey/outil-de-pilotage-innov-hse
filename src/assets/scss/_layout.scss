@@ -1,0 +1,334 @@
+// couleurs
+$bleu-fonce: #315691;
+$bleu-clair: #008BD0;
+$orange: #DC9034;
+$vert: #A5C35A;
+$rouge-danger: #E84B4B;
+$gris: #8092A4;
+$remplissage: rgba(128, 146, 164, 0.251);
+$blanc: #FFFFFF;
+$noir: #000000;
+
+// dérivées
+$fond-page: #F0F4F8;
+$fond-input: rgba(128, 146, 164, 0.15);
+$bordure: rgba(128, 146, 164, 0.3);
+$texte-leger: rgba(128, 146, 164, 0.8);
+
+// polices
+$font-moyenne: 'Poppins', sans-serif;
+$font-titre: 'Archivo Black', sans-serif;
+$font-basique: sans-serif;
+
+// dimensions
+$sidebar-largeur: 220px;
+$topbar-hauteur: 60px;
+$mobile: 768px;
+
+$rayon: 12px;
+$rayon-carte: 16px;
+$rayon-btn: 50px;
+
+$transition: 0.2s ease;
+
+// google fonts
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600&display=swap');
+
+// reset
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: $font-moyenne;
+    background: $fond-page;
+    color: $noir;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+a {
+    color: $bleu-fonce;
+    text-decoration: none;
+}
+
+button {
+    font-family: $font-moyenne;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+h1, h2, h3 {
+    font-family: $font-titre;
+}
+
+// layout
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.layout__sidebar {
+    width: $sidebar-largeur;
+    background: $bleu-fonce;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    transition: transform 0.3s ease;
+}
+
+.layout__main {
+    margin-left: $sidebar-largeur;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+// topbar
+.topbar {
+    height: $topbar-hauteur;
+    background: $blanc;
+    border-bottom: 1px solid $bordure;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.topbar__titre {
+    font-family: $font-titre;
+    font-size: 1.1rem;
+    color: $bleu-fonce;
+}
+
+.topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+// page
+.page {
+    padding: 24px 28px;
+    flex: 1;
+}
+
+// cartes
+.carte {
+    background: $blanc;
+    border-radius: $rayon-carte;
+    border: 1px solid $bordure;
+    margin-bottom: 18px;
+}
+
+.carte__entete {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid $bordure;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.carte__entete h2 {
+    font-family: $font-titre;
+    font-size: 1rem;
+    color: $bleu-fonce;
+}
+
+.carte__corps {
+    padding: 20px;
+}
+
+// boutons
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: $rayon-btn;
+    font-family: $font-moyenne;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all $transition;
+
+    &--primaire {
+        background: $bleu-clair;
+        color: $blanc;
+
+        &:hover {
+            background: $bleu-fonce;
+        }
+    }
+
+    &--fantome {
+        background: transparent;
+        color: $bleu-fonce;
+        border: 1.5px solid $bleu-fonce;
+
+        &:hover {
+            background: $remplissage;
+        }
+    }
+
+    &--danger {
+        background: $rouge-danger;
+        color: $blanc;
+
+        &:hover {
+            opacity: 0.88;
+        }
+    }
+
+    &--valider {
+        background: $vert;
+        color: $noir;
+
+        &:hover {
+            opacity: 0.88;
+        }
+    }
+
+    &--petit {
+        padding: 5px 13px;
+        font-size: 0.8rem;
+    }
+}
+
+// badges
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--valide { background: rgba($vert, 0.2); color: darken($vert, 35%); }
+    &--attente { background: rgba($orange, 0.25); color: darken($orange, 30%); }
+    &--outlook { background: rgba($bleu-clair, 0.15); color: $bleu-fonce; }
+    &--refuse { background: rgba($rouge-danger, 0.15); color: $rouge-danger; }
+}
+
+// tableaux
+.tableau-wrap {
+    overflow-x: auto;
+}
+
+.tableau {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: $font-moyenne;
+    font-size: 0.875rem;
+
+    th {
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: $gris;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid $bordure;
+        background: $fond-page;
+    }
+
+    td {
+        padding: 12px 14px;
+        border-bottom: 1px solid $bordure;
+        vertical-align: middle;
+    }
+
+    tr:hover td {
+        background: $remplissage;
+    }
+}
+
+// KPIS
+.kpi-grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.kpi {
+    background: $blanc;
+    border-radius: $rayon-carte;
+    padding: 18px 20px;
+    border: 1px solid $bordure;
+
+    &__label {
+        font-size: 0.75rem;
+        color: $gris;
+    }
+
+    &__valeur {
+        font-family: $font-titre;
+        font-size: 1.8rem;
+        color: $bleu-fonce;
+    }
+}
+
+// formulaires
+.champ {
+    margin-bottom: 14px;
+
+    label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: $bleu-fonce;
+        margin-bottom: 5px;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px 13px;
+        background: $fond-input;
+        border: 1.5px solid transparent;
+        border-radius: $rayon;
+
+        &:focus {
+            border-color: $bleu-clair;
+            background: $blanc;
+        }
+    }
+}
+
+// responsive
+@media (max-width: $mobile) {
+
+    .layout__sidebar {
+        transform: translateX(-100%);
+
+        &.sidebar--ouvert {
+            transform: translateX(0);
+        }
+    }
+
+    .layout__main {
+        margin-left: 0;
+        padding-top: $topbar-hauteur;
+    }
+
+    .page {
+        padding: 16px;
+    }
+
+    .topbar {
+        display: none;
+    }
+}
+

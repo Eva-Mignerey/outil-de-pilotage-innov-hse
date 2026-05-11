@@ -1,0 +1,23 @@
+[
+    { "id": 1,  "nom": "CARBONEX",         "secteur": "Chimie",      "jours_contractualises": 21, "taux_journalier": 520 },
+    { "id": 2,  "nom": "CARRIERES CHAMP",  "secteur": "BTP",         "jours_contractualises": 6,  "taux_journalier": 500 },
+    { "id": 3,  "nom": "STTI",             "secteur": "Transport",   "jours_contractualises": 6,  "taux_journalier": 500 },
+    { "id": 4,  "nom": "OMTP",             "secteur": "Industrie",   "jours_contractualises": 3,  "taux_journalier": 650 },
+    { "id": 5,  "nom": "SNC",              "secteur": "Commerce",    "jours_contractualises": 3,  "taux_journalier": 300 },
+    { "id": 6,  "nom": "LACOSTE",          "secteur": "Commerce",    "jours_contractualises": 1,  "taux_journalier": 500 },
+    { "id": 7,  "nom": "PLUXEE",           "secteur": "Services",    "jours_contractualises": 3,  "taux_journalier": 900 },
+    { "id": 8,  "nom": "SOLOCAL",          "secteur": "Commerce",    "jours_contractualises": 12, "taux_journalier": 900 },
+    { "id": 9,  "nom": "DEBOUCH",          "secteur": "Industrie",   "jours_contractualises": 3,  "taux_journalier": 540 },
+    { "id": 10, "nom": "WINTZENMANN",      "secteur": "Industrie",   "jours_contractualises": 12, "taux_journalier": 700 },
+    { "id": 11, "nom": "TERRES SERVICES",  "secteur": "Agriculture", "jours_contractualises": 1,  "taux_journalier": 630 },
+    { "id": 12, "nom": "LRT",              "secteur": "Transport",   "jours_contractualises": 2,  "taux_journalier": 500 },
+    { "id": 13, "nom": "LRC",              "secteur": "Commerce",    "jours_contractualises": 2,  "taux_journalier": 500 },
+    { "id": 14, "nom": "CUBE",             "secteur": "Logistique",  "jours_contractualises": 6,  "taux_journalier": 350 },
+    { "id": 15, "nom": "MORIN",            "secteur": "Industrie",   "jours_contractualises": 1,  "taux_journalier": 500 },
+    { "id": 16, "nom": "FUSALP",           "secteur": "Commerce",    "jours_contractualises": 2,  "taux_journalier": 700 },
+    { "id": 17, "nom": "NOEN",             "secteur": "Énergie",     "jours_contractualises": 6,  "taux_journalier": 600 },
+    { "id": 18, "nom": "CIIC",             "secteur": "Industrie",   "jours_contractualises": 1,  "taux_journalier": 650 },
+    { "id": 19, "nom": "TROYES PARC AUTO", "secteur": "Automobile",  "jours_contractualises": 2,  "taux_journalier": 500 },
+    { "id": 20, "nom": "INTERSPORT",       "secteur": "Commerce",    "jours_contractualises": 2,  "taux_journalier": 900 },
+    { "id": 21, "nom": "STTI TRANSIT",     "secteur": "Transport",   "jours_contractualises": 5,  "taux_journalier": 250 }
+]

@@ -1,0 +1,88 @@
+@import '../layout';
+
+.dashboard__grille {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard__sous-titre {
+    font-family: $font-moyenne;
+    font-size: 0.78rem;
+    color: $gris;
+}
+
+.dashboard__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.dashboard__pill {
+    font-family: $font-moyenne;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba($bleu-clair, 0.12);
+    color: $bleu-fonce;
+    padding: 2px 9px;
+    border-radius: 20px;
+}
+
+.dashboard__donut {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.dashboard__donut-canvas {
+    width: 160px;
+    flex-shrink: 0;
+}
+
+.dashboard__legende        { flex: 1; min-width: 100px; }
+.dashboard__legende-ligne  { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; font-family: $font-moyenne; font-size: 0.82rem; }
+.dashboard__legende-point  { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.dashboard__legende-nom    { flex: 1; font-weight: 600; }
+.dashboard__legende-val    { font-weight: 700; color: $bleu-fonce; }
+.dashboard__legende-max    { color: $gris; font-size: 0.72rem; }
+
+.dashboard__sync { font-family: $font-moyenne; font-size: 0.78rem; color: $gris; }
+
+.dashboard__carte-tableau .carte__corps { padding: 0; }
+
+.dashboard__mission-nom  { font-family: $font-moyenne; font-weight: 600; font-size: 0.85rem; }
+.dashboard__mission-date { font-family: $font-moyenne; font-size: 0.75rem; color: $gris; }
+.dashboard__mission-qui  { font-family: $font-moyenne; font-size: 0.83rem; }
+
+@media (max-width: $mobile) {
+    // KPI 2 colonnes
+    .kpi-grille { grid-template-columns: repeat(2, 1fr); }
+
+    // Donut centré en colonne
+    .dashboard__donut {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard__donut-canvas { width: 130px; }
+
+    // Masquer colonne "consultant" dans le tableau
+    .dashboard__carte-tableau .tableau th:nth-child(2),
+    .dashboard__carte-tableau .tableau td:nth-child(2) { display: none; }
+}
+
+// KPI cliquable (alertes)
+.kpi--cliquable {
+    cursor: pointer;
+    transition: transform $transition, box-shadow $transition;
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba($bleu-fonce, 0.12);
+    }
+}

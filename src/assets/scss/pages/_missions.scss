@@ -1,0 +1,78 @@
+@import '../layout';
+
+.missions__filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.missions__filtre {
+    padding: 7px 13px;
+    background: $blanc;
+    border: 1.5px solid $bordure;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    color: $noir;
+    cursor: pointer;
+    outline: none;
+    transition: border-color $transition;
+
+    &:focus { border-color: $bleu-clair; }
+}
+
+.missions__carte .carte__corps {
+    padding: 0;
+}
+
+.missions__titre {
+    font-family: $font-moyenne;
+    font-weight: 600;
+}
+
+.missions__outlook {
+    font-family: $font-moyenne;
+    font-size: 0.72rem;
+    color: $bleu-clair;
+    margin-top: 2px;
+}
+
+.missions__client {
+    font-family: $font-moyenne;
+    font-weight: 600;
+    color: $bleu-fonce;
+    font-size: 0.85rem;
+}
+
+.missions__dates {
+    font-family: $font-moyenne;
+    font-size: 0.8rem;
+    color: $gris;
+    line-height: 1.5;
+}
+
+.missions__jours {
+    font-family: $font-titre;
+    font-size: 1rem;
+    text-align: center;
+    color: $bleu-fonce;
+}
+
+.missions__actions {
+    display: flex;
+    gap: 4px;
+}
+
+.missions__vide {
+    font-family: $font-moyenne;
+    text-align: center;
+    color: $gris;
+    padding: 28px;
+}
+
+.missions__form-grille {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
