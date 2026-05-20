@@ -2,16 +2,16 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 
-const clients = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
+const clients  = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
 const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const user     = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
 
 // Saisies manuelles de facturation par client
 const facturations = ref(JSON.parse(localStorage.getItem('ihse_facturations') || '[]'))
 
-const modale = ref(false)
-const clientSel = ref(null)
-const formFact = ref({ theorique: '', reel: '', objectif: '', facture: '', commentaire: '' })
+const modale     = ref(false)
+const clientSel  = ref(null)
+const formFact   = ref({ theorique: '', reel: '', objectif: '', facture: '', commentaire: '' })
 
 function joursRealises(clientId) {
     return missions.value.filter(m => m.client_id === clientId && m.statut === 'valide').reduce((s, m) => s + (m.nb_jours || 0), 0)
@@ -42,10 +42,10 @@ function ouvrirFacturation(c) {
     clientSel.value = c
     const f = factClient(c.id)
     formFact.value = {
-        theorique: f.theorique || '',
-        reel: f.reel || '',
-        objectif: f.objectif || '',
-        facture: f.facture || '',
+        theorique:   f.theorique   || '',
+        reel:        f.reel        || '',
+        objectif:    f.objectif    || '',
+        facture:     f.facture     || '',
         commentaire: f.commentaire || ''
     }
     modale.value = true
@@ -169,24 +169,24 @@ const totalFacture = computed(() =>
                     <div class="missions__form-grille">
                         <div class="champ">
                             <label>Théorique contrat (€)</label>
-                            <input v-model="formFact.theorique" type="number" placeholder="Ex : 15000" />
+                            <input v-model="formFact.theorique" type="number" />
                         </div>
                         <div class="champ">
                             <label>Réel réalisé (€)</label>
-                            <input v-model="formFact.reel" type="number" placeholder="Ex : 12500" />
+                            <input v-model="formFact.reel" type="number" />
                         </div>
                         <div class="champ">
                             <label>Objectif (€)</label>
-                            <input v-model="formFact.objectif" type="number" placeholder="Ex : 14000" />
+                            <input v-model="formFact.objectif" type="number" />
                         </div>
                         <div class="champ">
                             <label>Facturé (€)</label>
-                            <input v-model="formFact.facture" type="number" placeholder="Ex : 13000" />
+                            <input v-model="formFact.facture" type="number" />
                         </div>
                     </div>
                     <div class="champ">
                         <label>Commentaire / justification</label>
-                        <textarea v-model="formFact.commentaire" rows="3" placeholder="Ex : 2j non facturés suite à litige..."></textarea>
+                        <textarea v-model="formFact.commentaire" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modale__pied">

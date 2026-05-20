@@ -8,8 +8,6 @@ const props = defineProps({
     single: { type: Boolean, default: false }
 })
 
-const premiereAffichage = ref(true)
-
 const toasts = ref([])
 
 const alertes = computed(() =>
@@ -22,27 +20,28 @@ const icones = {
   attention: '⚡'
 }
 
-function afficherToasts() {
-    const alertesTriees = [...alertes.value]
+const CLE_SESSION = 'ihse_toasts_affichés'
 
+function dejaMontres() {
+  return sessionStorage.getItem(CLE_SESSION) === '1'
+}
+
+function marquerMontres() {
+  sessionStorage.setItem(CLE_SESSION, '1')
+}
+
+function afficherToasts() {
+    if (dejaMontres()) return
+
+    const alertesTriees = [...alertes.value]
     if (alertesTriees.length === 0) return
 
-    const liste = premiereAffichage.value
-        ? alertesTriees
-        : [alertesTriees[0]] 
+    marquerMontres()
 
-    premiereAffichage.value = false
-
-    liste.forEach((a, i) => {
+    alertesTriees.forEach((a, i) => {
         const id = Date.now() + i
-
         setTimeout(() => {
-            toasts.value.push({
-                id,
-                ...a,
-                sortie: false
-            })
-
+            toasts.value.push({ id, ...a, sortie: false })
             setTimeout(() => fermer(id), 60000)
         }, i * 200)
     })
@@ -50,11 +49,8 @@ function afficherToasts() {
 
 function fermer(id) {
   const t = toasts.value.find(t => t.id === id)
-
   if (!t) return
-
   t.sortie = true
-
   setTimeout(() => {
     toasts.value = toasts.value.filter(t => t.id !== id)
   }, 250)

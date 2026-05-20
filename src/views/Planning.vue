@@ -79,7 +79,7 @@ function joursAPlanifier(empId, a, m) {
 }
 
 // Formules :
-// jours_dus       = jours_plannifies + jours_a_planifier
+// jours_dus = jours_plannifies + jours_a_planifier
 // jours_non_charges = jours_ouvres - jours_dus
 function joursDus(empId, a, m) {
     return joursPlannifies(empId, a, m) + joursAPlanifier(empId, a, m)
@@ -104,23 +104,27 @@ const trimestre = computed(() => {
     })
 })
 
+// Filtrage des employés pour le tableau
 const employesFiltres = computed(() =>
     filtreEmploye.value
         ? employes.value.filter(e => e.id === Number(filtreEmploye.value))
         : employes.value
 )
 
+// Mission du jour pour un employé donné
 function missionDuJour(empId, date) {
     return missions.value.find(m =>
         m.employe_id === empId && date >= m.date_debut && date <= m.date_fin
     )
 }
 
+// Couleur associée à un client
 function couleurClient(clientId) {
     const i = clients.value.findIndex(c => c.id === clientId)
     return couleurs[i % couleurs.length]
 }
 
+// Taux de charge d'un employé : (jours planifiés / capacité) * 100
 function tauxCharge(empId) {
     const emp = employes.value.find(e => e.id === empId)
     if (!emp) return 0
@@ -128,6 +132,7 @@ function tauxCharge(empId) {
     return Math.min(Math.round((j / (emp.capacite_jours || 1)) * 100), 100)
 }
 
+// Alerte si un employé à plus de jours planifiés que de jours ouvrés dans le mois 
 function alertePlanningEmploye(empId) {
     const realise = joursPlannifies(empId, annee.value, mois.value)
     if (realise > joursOuvresMois.value) return { type: 'surplus', msg: `+${realise - joursOuvresMois.value}j ce mois` }
@@ -135,6 +140,7 @@ function alertePlanningEmploye(empId) {
     return null
 }
 
+// Utilitaires
 function nomEmploye(id)  { return employes.value.find(e => e.id === id)?.nom || '—' }
 function formaterDate(d) { return new Date(d).toLocaleDateString('fr-FR') }
 function labelStatut(s)  { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
@@ -143,6 +149,7 @@ function classeBadge(s)  { return { valide: 'badge--valide', en_attente: 'badge-
 function moisPrecedent() { mois.value === 0  ? (mois.value = 11, annee.value--) : mois.value-- }
 function moisSuivant()   { mois.value === 11 ? (mois.value = 0,  annee.value++) : mois.value++ }
 
+// Couleur de l'écart ; rouge = surchargé, vert =sous-chargé, gris = équilibré
 function couleurEcart(ecart) {
     if (ecart > 0) return '#E84B4B'
     if (ecart < 0) return '#8092A4'
@@ -495,13 +502,13 @@ function couleurEcart(ecart) {
                     <h2>Alertes actives ({{ nbAlertes }})</h2>
                     <button @click="voirAlertes = false" style="background:none;font-size:1.1rem;color:#8092A4">✕</button>
                 </div>
-                <div style="padding:8px 0">
+                <div class="popup-liste__corps">
                     <div v-for="a in alertes" :key="a.client.id" class="alerte" :class="'alerte--' + a.niveau" style="margin:6px 16px">
                         <span class="alerte__client">{{ a.client.nom }}</span>
                         <span class="alerte__message">{{ a.message }}</span>
                     </div>
                 </div>
-                <div style="padding:12px 16px;border-top:1px solid #E8EAF0">
+                <div class="popup-liste__pied">
                     <router-link to="/clients" class="btn btn--primaire btn--petit" @click="voirAlertes = false">Voir les clients</router-link>
                 </div>
             </div>

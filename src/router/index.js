@@ -10,6 +10,7 @@ import Missions    from '../views/Missions.vue'
 import Employes    from '../views/Employes.vue'
 import Prospects   from '../views/Prospects.vue'
 import Facturation from '../views/Facturation.vue'
+import TableauCharges from '../views/TableauCharges.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,11 @@ const router = createRouter({
             component: Facturation,   
             name: 'facturation'    
         },
+        { 
+            path: '/tableau-charges',   
+            component: TableauCharges,   
+            name: 'tableau-charges'    
+        }
     ]
 })
 

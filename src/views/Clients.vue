@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import ToastAlertes from '../components/ToastAlertes.vue'
 import { alertesActives, niveauAlerte, messageAlerte } from '../services/alertes.js'
 
 const clients = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
@@ -26,8 +27,11 @@ const totalRealise = computed(() =>
     missions.value.filter(m => m.statut === 'valide').reduce((s, m) => s + (m.nb_jours || 0), 0)
 )
 
+const voirAlertes = ref(false)
+
 // Alertes actives — clients à risque ou dépassés
 const alertes = computed(() => alertesActives(clients.value, missions.value))
+const nbAlertes = computed(() => alertes.value.length)
 
 function joursRealises(clientId) {
     return missions.value
@@ -92,27 +96,20 @@ function fermerModale() { modale.value = false; edition.value = null }
 
 <template>
     <div class="layout">
-        <Sidebar :user="user" />
+        <Sidebar :user="user" :nbAlertes="nbAlertes" @voirAlertes="voirAlertes = true" />
+        <ToastAlertes :clients="clients" :missions="missions" />
 
         <div class="layout__main">
             <div class="topbar">
                 <span class="topbar__titre">Clients</span>
+                <div class="topbar__actions">
+                    <button v-if="nbAlertes" class="topbar__cloche" @click="voirAlertes = true">
+                        🔔 <span class="topbar__cloche-badge">{{ nbAlertes }}</span>
+                    </button>
+                </div>
             </div>
 
             <div class="page">
-
-                <!-- Alertes de dépassement -->
-                <div v-if="alertes.length" class="alertes-bandeau">
-                    <div
-                        v-for="a in alertes"
-                        :key="a.client.id"
-                        class="alerte"
-                        :class="'alerte--' + a.niveau"
-                    >
-                        <span class="alerte__client">{{ a.client.nom }}</span>
-                        <span class="alerte__message">{{ a.message }}</span>
-                    </div>
-                </div>
 
                 <!-- KPIs -->
                 <div class="kpi-grille clients__kpi">
@@ -221,6 +218,25 @@ function fermerModale() { modale.value = false; edition.value = null }
                     <button class="btn btn--primaire" @click="sauvegarder">
                         {{ edition ? 'Modifier' : 'Ajouter' }}
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panneau alertes -->
+        <div v-if="voirAlertes" class="popup-liste-fond" @click.self="voirAlertes = false">
+            <div class="popup-liste">
+                <div class="popup-liste__entete">
+                    <h2>Alertes actives ({{ nbAlertes }})</h2>
+                    <button @click="voirAlertes = false" style="background:none;font-size:1.1rem;color:#8092A4">✕</button>
+                </div>
+                <div class="popup-liste__corps">
+                    <div v-for="a in alertes" :key="a.client.id" class="alerte" :class="'alerte--' + a.niveau" style="margin:6px 16px">
+                        <span class="alerte__client">{{ a.client.nom }}</span>
+                        <span class="alerte__message">{{ a.message }}</span>
+                    </div>
+                </div>
+                <div class="popup-liste__pied">
+                    <button class="btn btn--fantome btn--petit" @click="voirAlertes = false">Fermer</button>
                 </div>
             </div>
         </div>

@@ -41,21 +41,37 @@
             <router-link class="sidebar__btn" to="/facturation" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◧</span><span>Facturation</span>
             </router-link>
+            <router-link class="sidebar__btn" to="/tableau-charges" active-class="actif" @click="ouvert = false">
+                <span class="sidebar__icone">▨</span><span>Tableau de charges</span>
+            </router-link>
         </nav>
 
         <div class="sidebar__user">
-            <div class="user-nom">{{ user.nom }}</div>
-            <div class="user-role">{{ user.profil === 'admin' ? 'Administrateur' : 'Consultant' }}</div>
+            <div class="sidebar__user-info">
+                <div class="user-nom">{{ user.nom }}</div>
+                <div class="user-role">{{ user.profil === 'admin' ? 'Administrateur' : 'Consultant' }}</div>
+            </div>
+            <button class="sidebar__deconnexion" @click="seDeconnecter" title="Se déconnecter">⏻</button>
         </div>
     </aside>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
 defineProps({
     user:      { type: Object, default: () => ({}) },
     nbAlertes: { type: Number, default: 0          }
 })
 defineEmits(['voirAlertes'])
+
 const ouvert = ref(false)
+const router = useRouter()
+
+function seDeconnecter() {
+    localStorage.removeItem('ihse_user')
+    sessionStorage.removeItem('ihse_toasts_affichés')
+    router.push('/connexion')
+}
 </script>

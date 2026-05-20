@@ -68,17 +68,53 @@
 .sidebar__user {
     padding: 14px 16px;
     border-top: 1px solid rgba($blanc, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sidebar__user-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 .user-nom {
     font-weight: 600;
     font-size: 0.85rem;
     color: $blanc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user-role {
     font-size: 0.72rem;
     color: rgba($blanc, 0.55);
+}
+
+.sidebar__deconnexion {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba($rouge-danger, 0.3);
+    color: $blanc;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba($rouge-danger, 0.5);
+    transition: background $transition, color $transition;
+    title: "Se déconnecter";
+
+    &:hover {
+        background: rgba($rouge-danger, 0.75);
+        color: $blanc;
+        border-color: rgba($rouge-danger, 0.5);
+    }
 }
 
 // menu burger
