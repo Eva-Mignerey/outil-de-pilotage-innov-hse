@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 
 const employes = ref(JSON.parse(localStorage.getItem('ihse_employes') || '[]'))
 const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-missions.value = undefined;
 const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
 
 const modale = ref(false)
