@@ -21,7 +21,7 @@ defineProps({
                 v-if="ind.source"
                 class="charges__carte-source"
             >
-                {{ ind.source }}
+                {{ ind.source}}
             </div>
         </div>
 
