@@ -276,3 +276,7 @@
     border-right: 4px solid transparent;
     border-top: 6px solid rgba(0, 0, 0, 0.6);
 }
+
+.mois-select__input:focus {
+    border-color: rgba(128, 146, 164, 0.5);
+}
