@@ -5,8 +5,8 @@ import ToastAlertes from '../components/ToastAlertes.vue'
 import store from '@/store.js'
 
 const employes = computed(() => store.employes)
-const clients  = computed(() => store.clients)
-const user     = computed(() => store.user || {})
+const clients = computed(() => store.clients)
+const user = computed(() => store.user || {})
 const missions = ref([...store.missions])
 
 const filtreEmploye = ref('')
@@ -30,14 +30,14 @@ const form = ref({
 const missionsFiltrees = computed(() =>
     missions.value.filter(m => {
         if (filtreEmploye.value && m.employe_id !== Number(filtreEmploye.value)) return false
-        if (filtreStatut.value  && m.statut !== filtreStatut.value)              return false
+        if (filtreStatut.value && m.statut !== filtreStatut.value) return false
         return !(filtreClient.value && m.client_id !== Number(filtreClient.value));
 
     }).sort((a, b) => new Date(b.date_debut) - new Date(a.date_debut))
 )
 
 function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom || '—' }
-function nomClient(id)  { return clients.value.find(c => c.id === id)?.nom  || '—' }
+function nomClient(id) { return clients.value.find(c => c.id === id)?.nom || '—' }
 function formaterDate(d){ return d ? new Date(d).toLocaleDateString('fr-FR') : '—' }
 function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
 function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
@@ -69,7 +69,7 @@ function supprimer(id) {
 function ouvrirAjout() {
     form.value = { titre: '', employe_id: null, client_id: null, date_debut: '', date_fin: '', nb_jours: 1, heures_supp_client: '', statut: 'en_attente' }
     edition.value = null
-    modale.value  = true
+    modale.value = true
 }
 
 function ouvrirEdition(m) { form.value = { heures_supp_client: '', ...m }; edition.value = m; modale.value = true }

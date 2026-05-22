@@ -7,10 +7,10 @@ import store from '@/store.js'
 const route = useRoute()
 const router = useRouter()
 
-const clients  = computed(() => store.clients)
+const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
 const employes = computed(() => store.employes)
-const user     = computed(() => store.user || {})
+const user = computed(() => store.user || {})
 
 // Récupérer le client par son id dans l'URL
 const client = computed(() =>

@@ -6,22 +6,22 @@ import { alertesActives } from '../services/alertes.js'
 import store from '@/store.js'
 
 const employes = computed(() => store.employes)
-const clients  = computed(() => store.clients)
+const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
-const user     = computed(() => store.user || {})
+const user = computed(() => store.user || {})
 
-const now           = new Date()
-const annee         = ref(now.getFullYear())
-const mois          = ref(now.getMonth())
+const now = new Date()
+const annee = ref(now.getFullYear())
+const mois = ref(now.getMonth())
 const filtreEmploye = ref('')
-const detail        = ref(null)
-const popupAlerte   = ref(null)
-const voirAlertes   = ref(false)
-const vueGlobale    = ref(false) // bascule vue mois / vue trimestrielle
+const detail = ref(null)
+const popupAlerte = ref(null)
+const voirAlertes = ref(false)
+const vueGlobale = ref(false) // bascule vue mois / vue trimestrielle
 
 const couleurs = ['#1B4F8A','#E8A020','#1A7A4A','#C0392B','#7B2D8B','#1A6B8A','#E67E22','#2E86C1','#8E44AD','#16A085']
 
-const alertes   = computed(() => alertesActives(clients.value, missions.value))
+const alertes = computed(() => alertesActives(clients.value, missions.value))
 const nbAlertes = computed(() => alertes.value.length)
 
 const titreMois = computed(() =>
@@ -32,12 +32,12 @@ const titreMois = computed(() =>
 const jours = computed(() => {
     const nb = new Date(annee.value, mois.value + 1, 0).getDate()
     return Array.from({ length: nb }, (_, i) => {
-        const d   = new Date(annee.value, mois.value, i + 1)
+        const d = new Date(annee.value, mois.value, i + 1)
         const dow = d.getDay()
         return {
-            date:    d.toISOString().split('T')[0],
-            num:     i + 1,
-            lettre:  ['D','L','M','M','J','V','S'][dow],
+            date: d.toISOString().split('T')[0],
+            num: i + 1,
+            lettre: ['D','L','M','M','J','V','S'][dow],
             weekend: dow === 0 || dow === 6
         }
     })
@@ -142,15 +142,15 @@ function alertePlanningEmploye(empId) {
 }
 
 // Utilitaires
-function nomEmploye(id)  { return employes.value.find(e => e.id === id)?.nom || '—' }
+function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom || '—' }
 function formaterDate(d) { return new Date(d).toLocaleDateString('fr-FR') }
-function labelStatut(s)  { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
-function classeBadge(s)  { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
+function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
+function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
 
 function moisPrecedent() { mois.value === 0  ? (mois.value = 11, annee.value--) : mois.value-- }
-function moisSuivant()   { mois.value === 11 ? (mois.value = 0,  annee.value++) : mois.value++ }
+function moisSuivant() { mois.value === 11 ? (mois.value = 0,  annee.value++) : mois.value++ }
 
-// Couleur de l'écart ; rouge = surchargé, vert =sous-chargé, gris = équilibré
+// Couleur de l'écart : rouge = surchargé, vert =sous-chargé, gris = équilibré
 function couleurEcart(ecart) {
     if (ecart > 0) return '#E84B4B'
     if (ecart < 0) return '#8092A4'

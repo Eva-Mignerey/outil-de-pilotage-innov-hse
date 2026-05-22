@@ -4,8 +4,8 @@ import Sidebar from '../components/Sidebar.vue'
 import store from '@/store.js'
 
 const prospects = ref([...store.prospects])
-const clients   = ref([...store.clients])
-const user      = computed(() => store.user || {})
+const clients = ref([...store.clients])
+const user = computed(() => store.user || {})
 
 const recherche = ref('')
 const filtreStatut = ref('')
@@ -22,10 +22,9 @@ const form = ref({
     date_relance: '',
     statut: 'a_venir',
     priorite: 'normale',
-    commentaire:  ''
+    commentaire: ''
 })
 
-// Clients existants affichés en lecture seule comme "convertis"
 const clientsCommeProspects = computed(() =>
     clients.value.map(c => ({
         _estClient: true,
@@ -43,17 +42,16 @@ const clientsCommeProspects = computed(() =>
     }))
 )
 
-// Fusion prospects + clients pour l'affichage
 const tousLesProspects = computed(() => [
     ...prospects.value,
     ...clientsCommeProspects.value
 ])
 
 const statuts = [
-    { val: 'en_retard', label: 'En retard',  classe: 'badge--alerte-surplus' },
-    { val: 'en_cours', label: 'En cours',   classe: 'badge--attente' },
-    { val: 'a_venir', label: 'À venir',    classe: 'badge--outlook' },
-    { val: 'termine', label: 'Terminé',    classe: 'badge--valide' },
+    { val: 'en_retard', label: 'En retard', classe: 'badge--alerte-surplus' },
+    { val: 'en_cours', label: 'En cours', classe: 'badge--attente' },
+    { val: 'a_venir', label: 'À venir', classe: 'badge--outlook' },
+    { val: 'termine', label: 'Terminé', classe: 'badge--valide' },
 ]
 
 function labelStatut(val) { return statuts.find(s => s.val === val)?.label || val }
@@ -128,7 +126,6 @@ function supprimer() {
 }
 
 function ouvrirEditionClient(p) {
-    // Ouvre la modale d'édition pour un client affiché dans prospects
     const id = p.id.toString().replace('client-', '')
     const client = clients.value.find(c => c.id.toString() === id)
     if (!client) return
