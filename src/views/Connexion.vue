@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import store from '@/store.js'
 
 const router = useRouter()
 
@@ -28,7 +29,7 @@ function seConnecter() {
         return
     }
 
-    localStorage.setItem('ihse_user', JSON.stringify(compte))
+    store.setUser(compte)
     router.push('/dashboard')
 }
 </script>

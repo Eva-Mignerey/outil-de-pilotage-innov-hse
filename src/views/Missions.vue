@@ -2,11 +2,12 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
+import store from '@/store.js'
 
-const employes = ref(JSON.parse(localStorage.getItem('ihse_employes') || '[]'))
-const clients = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const employes = computed(() => store.employes)
+const clients  = computed(() => store.clients)
+const user     = computed(() => store.user || {})
+const missions = ref([...store.missions])
 
 const filtreEmploye = ref('')
 const filtreStatut = ref('')
@@ -49,20 +50,20 @@ function sauvegarder() {
     } else {
         missions.value.push({ id: Date.now(), ...form.value })
     }
-    localStorage.setItem('ihse_missions', JSON.stringify(missions.value))
+    store.setMissions(missions.value)
     fermerModale()
 }
 
 function valider(m) {
     const i = missions.value.findIndex(x => x.id === m.id)
     missions.value[i].statut = 'valide'
-    localStorage.setItem('ihse_missions', JSON.stringify(missions.value))
+    store.setMissions(missions.value)
 }
 
 function supprimer(id) {
     if (!confirm('Supprimer cette tâche ?')) return
     missions.value = missions.value.filter(m => m.id !== id)
-    localStorage.setItem('ihse_missions', JSON.stringify(missions.value))
+    store.setMissions(missions.value)
 }
 
 function ouvrirAjout() {

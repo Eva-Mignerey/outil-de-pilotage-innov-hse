@@ -1,9 +1,10 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ChargeCard from '../components/ChargeCard.vue'
+import store from '@/store.js'
 
-const user = ref(JSON.parse(localStorage.getItem('ihse_user') || '{}'))
+const user = computed(() => store.user || {})
 
 const nomsMois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
 const moisActuel = new Date().getMonth()
@@ -90,7 +91,7 @@ const categories = [
 
 // données
 const charges = ref(
-    JSON.parse(localStorage.getItem('ihse_charges') || 'null')
+    store.charges
     || Object.fromEntries(
         categories.flatMap(c =>
             c.indicateurs.map(i => [i.cle, Array(12).fill('')])
@@ -106,7 +107,7 @@ const valeur = (cle, m = moisSaisie.value) =>
 const saisir = (cle, val) => {
     charges.value[cle] ??= Array(12).fill('')
     charges.value[cle][moisSaisie.value] = val
-    localStorage.setItem('ihse_charges', JSON.stringify(charges.value))
+    store.setCharges(charges.value)
 }
 
 // graphique
@@ -184,13 +185,10 @@ watch(graphiqueActif, async () => {
     <Sidebar :user="user" />
 
     <div class="layout__main">
-
         <div class="topbar">
-
             <span class="topbar__titre">
                 Tableau des charges
             </span>
-
             <div class="mois-select">
                 <select v-model="moisSaisie" class="mois-select__input">
                     <option v-for="(m,i) in nomsMois" :key="i" :value="i">
@@ -237,13 +235,9 @@ watch(graphiqueActif, async () => {
                     >
                         <span>Voir l'évolution</span>
                 </button>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <div

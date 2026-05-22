@@ -16,7 +16,7 @@
 
     <aside class="layout__sidebar" :class="{ 'sidebar--ouvert': ouvert }">
         <div class="sidebar__logo">
-            <img src="/logo.svg" alt="Innov'HSE" class="sidebar__logo-img" />
+            <img class="sidebar__logo-img" src="/logo.svg" alt="Innov'HSE" loading="eager" fetchpriority="high" />
         </div>
 
         <nav class="sidebar__nav">
@@ -59,6 +59,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import store from '@/store.js'
 
 defineProps({
     user:      { type: Object, default: () => ({}) },
@@ -70,7 +71,7 @@ const ouvert = ref(false)
 const router = useRouter()
 
 function seDeconnecter() {
-    localStorage.removeItem('ihse_user')
+    store.setUser(null)
     sessionStorage.removeItem('ihse_toasts_affichés')
     router.push('/connexion')
 }

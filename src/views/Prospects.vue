@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import store from '@/store.js'
 
-const prospects = ref(JSON.parse(localStorage.getItem('ihse_prospects') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')      || '{}'))
+const prospects = ref([...store.prospects])
+const clients   = ref([...store.clients])
+const user      = computed(() => store.user || {})
 
 const recherche = ref('')
 const filtreStatut = ref('')
@@ -23,6 +25,30 @@ const form = ref({
     commentaire:  ''
 })
 
+// Clients existants affichés en lecture seule comme "convertis"
+const clientsCommeProspects = computed(() =>
+    clients.value.map(c => ({
+        _estClient: true,
+        id: 'client-' + c.id,
+        nom: c.nom,
+        entreprise: c.nom,
+        secteur: c.secteur || '',
+        email: '',
+        telephone: '',
+        date_contact: '',
+        date_relance: '',
+        statut: 'termine',
+        priorite: 'normale',
+        commentaire: ''
+    }))
+)
+
+// Fusion prospects + clients pour l'affichage
+const tousLesProspects = computed(() => [
+    ...prospects.value,
+    ...clientsCommeProspects.value
+])
+
 const statuts = [
     { val: 'en_retard', label: 'En retard',  classe: 'badge--alerte-surplus' },
     { val: 'en_cours', label: 'En cours',   classe: 'badge--attente' },
@@ -36,19 +62,18 @@ function classeStatut(val) { return statuts.find(s => s.val === val)?.classe || 
 // Compteurs par statut
 const compteurs = computed(() => {
     const c = {}
-    statuts.forEach(s => { c[s.val] = prospects.value.filter(p => p.statut === s.val).length })
+    statuts.forEach(s => { c[s.val] = tousLesProspects.value.filter(p => p.statut === s.val).length })
     return c
 })
 
 const prospectsFiltres = computed(() => {
-    return prospects.value.filter(p => {
+    return tousLesProspects.value.filter(p => {
         const matchRecherche = !recherche.value ||
             p.nom.toLowerCase().includes(recherche.value.toLowerCase()) ||
             p.entreprise?.toLowerCase().includes(recherche.value.toLowerCase())
         const matchStatut = !filtreStatut.value || p.statut === filtreStatut.value
         return matchRecherche && matchStatut
     }).sort((a, b) => {
-        // En retard en premier
         const ordre = { en_retard: 0, en_cours: 1, a_venir: 2, termine: 3 }
         return (ordre[a.statut] || 0) - (ordre[b.statut] || 0)
     })
@@ -56,37 +81,91 @@ const prospectsFiltres = computed(() => {
 
 function sauvegarder() {
     if (!form.value.nom) return
+    if (edition.value?._clientId) {
+        sauvegarderClient()
+        return
+    }
     if (edition.value) {
         const i = prospects.value.findIndex(p => p.id === edition.value.id)
         prospects.value[i] = { ...edition.value, ...form.value }
     } else {
         prospects.value.push({ id: Date.now(), ...form.value })
     }
-    localStorage.setItem('ihse_prospects', JSON.stringify(prospects.value))
+    store.setProspects(prospects.value)
     fermerModale()
 }
 
-function supprimer(id) {
-    if (!confirm('Supprimer ce prospect ?')) return
-    prospects.value = prospects.value.filter(p => p.id !== id)
-    localStorage.setItem('ihse_prospects', JSON.stringify(prospects.value))
+const confirmerSuppr = ref(null)
+
+function demanderSuppression(p) {
+    confirmerSuppr.value = p
+}
+
+function supprimer() {
+    const p = confirmerSuppr.value
+    if (!p) return
+
+    if (p._estClient) {
+        // Supprimer le client
+        const id = p.id.toString().replace('client-', '')
+        clients.value = clients.value.filter(c => c.id.toString() !== id)
+        store.setClients(clients.value)
+        // Supprimer aussi le prospect lié s'il existe
+        prospects.value = prospects.value.filter(x => x.client_id?.toString() !== id)
+        store.setProspects(prospects.value)
+    } else {
+        // Supprimer le prospect
+        const clientId = p.client_id
+        prospects.value = prospects.value.filter(x => x.id !== p.id)
+        store.setProspects(prospects.value)
+        // Supprimer aussi le client lié s'il existe
+        if (clientId) {
+            clients.value = clients.value.filter(c => c.id !== clientId)
+            store.setClients(clients.value)
+        }
+    }
+    confirmerSuppr.value = null
+}
+
+function ouvrirEditionClient(p) {
+    // Ouvre la modale d'édition pour un client affiché dans prospects
+    const id = p.id.toString().replace('client-', '')
+    const client = clients.value.find(c => c.id.toString() === id)
+    if (!client) return
+    form.value = { ...client, _clientId: client.id }
+    edition.value = { ...p, _clientId: client.id }
+    modale.value = true
+}
+
+function sauvegarderClient() {
+    const id = edition.value._clientId
+    const i = clients.value.findIndex(c => c.id === id)
+    if (i === -1) return
+    clients.value[i] = { ...clients.value[i], nom: form.value.nom, secteur: form.value.secteur }
+    store.setClients(clients.value)
+    fermerModale()
 }
 
 // Convertir un prospect en client
 function convertirEnClient(prospect) {
     if (!confirm(`Convertir "${prospect.nom}" en client ?`)) return
-    const clients = JSON.parse(localStorage.getItem('ihse_clients') || '[]')
-    clients.push({
-        id: Date.now(),
+    const clientId = Date.now()
+    const tousClients = [...store.clients]
+    tousClients.push({
+        id: clientId,
         nom: prospect.entreprise || prospect.nom,
         secteur: prospect.secteur || '',
-        jours_contractualises: 0
+        jours_contractualises: 0,
+        prospect_id: prospect.id  // lien vers le prospect
     })
-    localStorage.setItem('ihse_clients', JSON.stringify(clients))
-    // Marquer comme terminé
+    store.setClients(tousClients)
+    clients.value = tousClients
+
+    // Marquer comme terminé + stocker le lien
     const i = prospects.value.findIndex(p => p.id === prospect.id)
     prospects.value[i].statut = 'termine'
-    localStorage.setItem('ihse_prospects', JSON.stringify(prospects.value))
+    prospects.value[i].client_id = clientId  // lien vers le client
+    store.setProspects(prospects.value)
     alert(`"${prospect.nom}" ajouté à la liste des clients !`)
 }
 
@@ -126,7 +205,7 @@ function fermerModale() { modale.value = false; edition.value = null }
                         :class="{ actif: filtreStatut === '' }"
                         @click="filtreStatut = ''"
                     >
-                        Tous <span class="prospects__pill-count">{{ prospects.length }}</span>
+                        Tous <span class="prospects__pill-count">{{ tousLesProspects.length }}</span>
                     </button>
                     <button
                         v-for="s in statuts"
@@ -178,12 +257,28 @@ function fermerModale() { modale.value = false; edition.value = null }
                                             <span class="badge" :class="classeStatut(p.statut)">
                                                 {{ labelStatut(p.statut) }}
                                             </span>
+                                            <span v-if="p._estClient || p.statut === 'termine'" class="badge badge--outlook" style="margin-left:4px">Client</span>
                                         </td>
                                         <td>
                                             <div class="clients__actions">
-                                                <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(p)" title="Éditer">✎</button>
-                                                <button class="btn btn--valider btn--petit" @click="convertirEnClient(p)" title="Convertir en client">→ Client</button>
-                                                <button class="btn btn--danger btn--petit" @click="supprimer(p.id)" title="Supprimer">✕</button>
+                                                <button
+                                                    class="btn btn--fantome btn--petit"
+                                                    @click="p._estClient ? ouvrirEditionClient(p) : ouvrirEdition(p)"
+                                                    title="Éditer"
+                                                >✎</button>
+                                                <template v-if="!p._estClient">
+                                                    <button
+                                                        v-if="p.statut !== 'termine'"
+                                                        class="btn btn--valider btn--petit"
+                                                        @click="convertirEnClient(p)"
+                                                        title="Convertir en client"
+                                                    >→ Client</button>
+                                                </template>
+                                                <button
+                                                    class="btn btn--danger btn--petit"
+                                                    @click="demanderSuppression(p)"
+                                                    title="Supprimer"
+                                                >✕</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -260,6 +355,27 @@ function fermerModale() { modale.value = false; edition.value = null }
                     <button class="btn btn--primaire" @click="sauvegarder">
                         {{ edition ? 'Modifier' : 'Ajouter' }}
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation suppression -->
+        <div v-if="confirmerSuppr" class="modale-fond" @click.self="confirmerSuppr = null">
+            <div class="modale" style="max-width:400px">
+                <div class="modale__entete">
+                    <h2>Supprimer ?</h2>
+                    <button class="modale__fermer" @click="confirmerSuppr = null">✕</button>
+                </div>
+                <div class="modale__corps">
+                    <p style="color:#4A5568">
+                        Tu es sur le point de supprimer <strong>{{ confirmerSuppr.nom }}</strong>.
+                        <template v-if="confirmerSuppr._estClient"> Cette action le supprimera aussi de la page Clients.</template>
+                        Cette action est irréversible.
+                    </p>
+                </div>
+                <div class="modale__pied">
+                    <button class="btn btn--fantome" @click="confirmerSuppr = null">Annuler</button>
+                    <button class="btn btn--danger" @click="supprimer">Supprimer</button>
                 </div>
             </div>
         </div>

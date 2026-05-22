@@ -3,10 +3,11 @@ import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
 import { alertesActives, niveauAlerte, messageAlerte } from '../services/alertes.js'
+import store from '@/store.js'
 
-const clients = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const clients  = ref([...store.clients])
+const missions = computed(() => store.missions)
+const user     = computed(() => store.user || {})
 
 const recherche = ref('')
 const modale = ref(false)
@@ -79,14 +80,29 @@ function sauvegarder() {
     } else {
         clients.value.push({ id: Date.now(), ...form.value })
     }
-    localStorage.setItem('ihse_clients', JSON.stringify(clients.value))
+    store.setClients(clients.value)
     fermerModale()
 }
 
-function supprimer(id) {
-    if (!confirm('Supprimer ce client ?')) return
+const confirmerSuppr = ref(null) // client à supprimer
+
+function demanderSuppression(c) {
+    confirmerSuppr.value = c
+}
+
+function supprimer() {
+    if (!confirmerSuppr.value) return
+    const id = confirmerSuppr.value.id
+
+    // Supprimer le client
     clients.value = clients.value.filter(c => c.id !== id)
-    localStorage.setItem('ihse_clients', JSON.stringify(clients.value))
+    store.setClients(clients.value)
+
+    // Supprimer aussi le prospect lié s'il existe
+    const prospectsMAJ = store.prospects.filter(p => p.client_id !== id)
+    store.setProspects(prospectsMAJ)
+
+    confirmerSuppr.value = null
 }
 
 function ouvrirAjout() { form.value = { nom: '', secteur: '', jours_contractualises: 10 }; edition.value = null; modale.value = true }
@@ -179,7 +195,7 @@ function fermerModale() { modale.value = false; edition.value = null }
                                             <div class="clients__actions">
                                                 <router-link :to="'/clients/' + c.id" class="btn btn--fantome btn--petit" title="Voir la fiche">👁</router-link>
                                                 <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(c)">Éditer</button>
-                                                <button class="btn btn--danger btn--petit" @click="supprimer(c.id)">Suppr.</button>
+                                                <button class="btn btn--danger btn--petit" @click="demanderSuppression(c)">Suppr.</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -222,7 +238,22 @@ function fermerModale() { modale.value = false; edition.value = null }
             </div>
         </div>
 
-        <!-- Panneau alertes -->
+        <!-- Confirmation suppression -->
+        <div v-if="confirmerSuppr" class="modale-fond" @click.self="confirmerSuppr = null">
+            <div class="modale" style="max-width:400px">
+                <div class="modale__entete">
+                    <h2>Supprimer ce client ?</h2>
+                    <button class="modale__fermer" @click="confirmerSuppr = null">✕</button>
+                </div>
+                <div class="modale__corps">
+                    <p style="color:#4A5568">Tu es sur le point de supprimer <strong>{{ confirmerSuppr.nom }}</strong>. Cette action est irréversible.</p>
+                </div>
+                <div class="modale__pied">
+                    <button class="btn btn--fantome" @click="confirmerSuppr = null">Annuler</button>
+                    <button class="btn btn--danger" @click="supprimer">Supprimer</button>
+                </div>
+            </div>
+        </div>
         <div v-if="voirAlertes" class="popup-liste-fond" @click.self="voirAlertes = false">
             <div class="popup-liste">
                 <div class="popup-liste__entete">

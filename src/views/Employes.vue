@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import store from '@/store.js'
 
-const employes = ref(JSON.parse(localStorage.getItem('ihse_employes') || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const employes = ref([...store.employes])
+const missions  = computed(() => store.missions)
+const user      = computed(() => store.user || {})
 
 const modale = ref(false)
 const edition = ref(null)
@@ -46,14 +47,14 @@ function sauvegarder() {
     } else {
         employes.value.push({ id: Date.now(), ...form.value })
     }
-    localStorage.setItem('ihse_employes', JSON.stringify(employes.value))
+    store.setEmployes(employes.value)
     fermerModale()
 }
 
 function supprimer(id) {
     if (!confirm('Supprimer ce consultant ?')) return
     employes.value = employes.value.filter(e => e.id !== id)
-    localStorage.setItem('ihse_employes', JSON.stringify(employes.value))
+    store.setEmployes(employes.value)
 }
 
 function ouvrirAjout() { form.value = { nom: '', email: '', equipe: 'Troyes', capacite_jours: 218, conges_jours: 25, taux_horaire: 450, role: 'consultant' }; edition.value = null; modale.value = true }

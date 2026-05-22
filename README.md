@@ -1,26 +1,25 @@
-# Innov’HSE — Outil de pilotage
+# Innov'HSE — Outil de pilotage
 
-Outil de gestion et de planification des missions HSE développé dans le cadre d’un stage de 10 semaines (BUT MMI).
+Outil de gestion et de planification des missions HSE développé dans le cadre d'un stage de 10 semaines (BUT MMI).
 
-Avant cet outil, la gestion des missions, du plan de charge et des clients se faisait manuellement sur Excel et Outlook, sans vue consolidée. L’objectif est de centraliser l’ensemble dans une application unique.
+Avant cet outil, la gestion des missions, du plan de charge et des clients se faisait manuellement sur Excel et Outlook, sans vue consolidée. L'objectif est de centraliser l'ensemble dans une application unique, accessible depuis un navigateur.
 
 ---
 
 ## Lancer le projet
 
-```bash id="xk2p91"
+```bash
 npm install
 npm run dev
 ```
 
-Application accessible sur :
-[http://localhost:5173](http://localhost:5173)
+Application accessible sur [http://localhost:5173](http://localhost:5173)
 
 ---
 
 ## Build production
 
-```bash id="m3nq7d"
+```bash
 npm run build
 ```
 
@@ -28,70 +27,84 @@ Après le build, copier le fichier `.htaccess` dans le dossier `dist/` pour assu
 
 ---
 
-## Accès / authentification
+## Authentification
 
-L’application inclut un système de connexion local.
+L'application inclut un système de connexion local basé sur le `localStorage`.
 
-Les comptes disponibles dépendent des données présentes dans le stockage local ou des fichiers de démo (`/data`).
+Les comptes sont initialisés automatiquement au premier lancement depuis `main.js` :
+
+| Nom                  | Email                       | Profil      | Mot de passe |
+| -------------------- | --------------------------- | ----------- | ------------ |
+| Matthieu Roche       | demo@innov-hse.fr           | Admin       | demo1234     |
+| Damaris Quintin      | damaris@innov-hse.fr        | Admin       | demo1234     |
+| Andrea Romary        | andrea@innov-hse.fr         | Consultant  | demo1234     |
+| Antonin Guay Hemard  | antonin@innov-hse.fr        | Consultant  | demo1234     |
 
 ---
 
 ## Fonctionnalités principales
 
-| Domaine     | Fonctionnalités                               |
-| ----------- | --------------------------------------------- |
-| Dashboard   | KPIs, graphiques, alertes                     |
-| Planning    | Vue mensuelle et trimestrielle                |
-| Prospects   | Suivi des contacts avant signature            |
-| Clients     | Suivi des contrats et avancement              |
-| Missions    | Gestion des tâches et temps passé             |
-| Équipe      | Suivi de la charge de travail                 |
-| Facturation | Suivi financier (théorique / réel / objectif) |
+| Domaine          | Fonctionnalités                                                          |
+| ---------------- | ------------------------------------------------------------------------ |
+| Dashboard        | KPIs globaux, graphiques par client/employé, alertes de dépassement      |
+| Planning         | Vue mensuelle et trimestrielle, assignation des missions par employé     |
+| Prospects        | Suivi commercial, conversion prospect → client, statuts et relances      |
+| Clients          | Suivi des contrats, avancement, alertes de dépassement en temps réel     |
+| Fiche client     | Détail complet : missions, jours réalisés, progression du contrat        |
+| Missions         | Création, validation et suppression de tâches par employé et client      |
+| Équipe           | Taux de charge par consultant, jours restants, capacité annuelle         |
+| Facturation      | Suivi financier théorique / réel / objectif par client                   |
+| Tableau de bord charges | Suivi mensuel des charges par catégorie avec graphiques d'évolution |
 
 ---
 
-## Pages de l’application
+## Pages de l'application
 
-| Page         | Route          | Description                  |
-| ------------ | -------------- | ---------------------------- |
-| Connexion    | `/connexion`   | Authentification utilisateur |
-| Inscription  | `/inscription` | Création de compte           |
-| Dashboard    | `/dashboard`   | Indicateurs + alertes        |
-| Planning     | `/planning`    | Gestion du planning          |
-| Prospects    | `/prospects`   | Suivi commercial             |
-| Clients      | `/clients`     | Liste des clients            |
-| Fiche client | `/clients/:id` | Détail d’un client           |
-| Missions     | `/missions`    | Gestion des tâches           |
-| Équipe       | `/employes`    | Gestion des collaborateurs   |
-| Facturation  | `/facturation` | Suivi financier              |
+| Page              | Route              | Description                              |
+| ----------------- | ------------------ | ---------------------------------------- |
+| Connexion         | `/connexion`       | Authentification utilisateur             |
+| Inscription       | `/inscription`     | Création de compte                       |
+| Dashboard         | `/dashboard`       | Indicateurs globaux + alertes            |
+| Planning          | `/planning`        | Vue planning mensuelle/trimestrielle     |
+| Prospects         | `/prospects`       | Suivi commercial et conversion clients   |
+| Clients           | `/clients`         | Liste des clients et suivi contrats      |
+| Fiche client      | `/clients/:id`     | Détail d'un client                       |
+| Missions          | `/missions`        | Gestion des tâches et temps passé        |
+| Équipe            | `/employes`        | Gestion des collaborateurs               |
+| Facturation       | `/facturation`     | Suivi financier                          |
+| Tableau de charges| `/tableau-charges` | Indicateurs mensuels par catégorie       |
 
 ---
 
 ## Stack technique
 
-| Technologie         | Usage                               |
-| ------------------- | ----------------------------------- |
-| Vue.js 3            | Framework frontend                  |
-| Vue Router          | Navigation                          |
-| Vite                | Build tool                          |
-| SCSS                | Styles modulaires                   |
-| Chart.js            | Graphiques                          |
-| localStorage        | Stockage des données                |
-| Microsoft Graph API | Préparation synchronisation Outlook |
+| Technologie         | Usage                                      |
+| ------------------- | ------------------------------------------ |
+| Vue.js 3            | Framework frontend (Composition API)       |
+| Vue Router          | Navigation + guards d'authentification     |
+| Vite                | Build tool                                 |
+| SCSS                | Styles modulaires avec variables globales  |
+| Chart.js            | Graphiques (évolution, barres, courbes)    |
+| Store réactif       | Partage de données entre vues (sans Pinia) |
+| localStorage        | Persistance des données                    |
+| Microsoft Graph API | Préparation synchronisation Outlook        |
 
 ---
 
 ## Structure du projet
 
-```id="z9k2lm"
+```
 src/
-├── main.js                  point d’entrée + versioning données
-├── App.vue                  layout principal
-├── router/                 routes + guards
+├── main.js                   Point d'entrée + initialisation et versioning des données
+├── App.vue                   Layout principal
+├── store.js                  Store réactif partagé entre toutes les vues
+├── router/
+│   └── index.js              Routes + guards d'authentification
 │
 ├── components/
-│   ├── Sidebar.vue
-│   └── ToastAlertes.vue
+│   ├── Sidebar.vue           Navigation latérale + déconnexion
+│   ├── ToastAlertes.vue      Notifications d'alerte (affichées une fois par session)
+│   └── ChargeCard.vue        Carte indicateur pour le tableau de charges
 │
 ├── views/
 │   ├── Connexion.vue
@@ -103,20 +116,21 @@ src/
 │   ├── FicheClient.vue
 │   ├── Missions.vue
 │   ├── Employes.vue
-│   └── Facturation.vue
+│   ├── Facturation.vue
+│   └── TableauCharges.vue
 │
 ├── services/
-│   ├── alertes.js
-│   ├── db.js
-│   └── outlook.js
+│   ├── alertes.js            Logique de calcul et niveaux d'alerte
+│   ├── db.js                 Utilitaires données
+│   └── outlook.js            Préparation Microsoft Graph API
 │
 ├── data/
-│   ├── employes.json
-│   ├── clients.json
-│   └── missions.json
+│   ├── employes.json         Données initiales employés
+│   ├── clients.json          Données initiales clients (21 clients)
+│   └── missions.json         Données initiales missions
 │
 └── scss/
-    ├── styles.scss
+    ├── styles.scss           Fichier principal (imports)
     ├── _layout.scss
     ├── _sidebar.scss
     ├── _alertes.scss
@@ -127,57 +141,82 @@ src/
     ├── _prospects.scss
     ├── _missions.scss
     ├── _employes.scss
+    ├── _tableaucharges.scss
     ├── _connexion.scss
     └── _inscription.scss
 ```
 
 ---
 
-## Système d’alertes
+## Gestion des données
 
-Géré dans `services/alertes.js`, partagé entre plusieurs modules (Dashboard, Clients, Planning).
+### Initialisation automatique
 
-| Niveau      | Seuil   | Affichage     |
-| ----------- | ------- | ------------- |
-| Attention   | 70–90%  | Alerte jaune  |
-| Dépassement | 90–100% | Alerte orange |
-| Surplus     | > 100%  | Alerte rouge  |
+Au premier lancement, `main.js` injecte les données de démonstration dans le `localStorage` via un système de versioning :
 
-Les alertes sont affichées sous forme de notifications et centralisées dans une icône dédiée.
+```js
+const VERSION_DONNEES = '1.3'
+```
+
+Changer ce numéro réinitialise toutes les données au prochain rechargement.
+
+### Store réactif (`store.js`)
+
+Les données sont chargées **une seule fois** au démarrage et partagées entre toutes les vues via un store réactif léger (sans Pinia). Chaque écriture met à jour simultanément le store et le `localStorage`.
+
+```js
+import store from '@/store.js'
+
+// Lire
+const clients = computed(() => store.clients)
+
+// Écrire
+store.setClients(nouveauxClients)
+```
+
+---
+
+## Système d'alertes
+
+Géré dans `services/alertes.js`, partagé entre Dashboard, Clients et Planning.
+
+| Niveau      | Seuil    | Affichage     |
+| ----------- | -------- | ------------- |
+| Attention   | 70–90%   | Alerte jaune  |
+| Dépassement | 90–100%  | Alerte orange |
+| Surplus     | > 100%   | Alerte rouge  |
+
+Les alertes sont affichées sous forme de toasts **une seule fois par session** (mémorisé via `sessionStorage`), puis accessibles à tout moment via l'icône 🔔 dans la topbar.
+
+---
+
+## Système de prospects
+
+Les prospects et les clients sont deux listes distinctes mais synchronisées :
+
+- Un prospect peut être **converti en client** via le bouton "→ Client"
+- La conversion crée un lien (`client_id` / `prospect_id`) entre les deux entrées
+- **Supprimer un client supprime le prospect lié**, et inversement
+- La page Prospects affiche aussi les clients existants (badge bleu "Client")
 
 ---
 
 ## Logique de planning
 
-```id="q7m2nd"
+```
 Jours planifiés + Jours à planifier = Jours dûs
 Jours non chargés + Jours dûs = Jours ouvrés
 ```
 
-Le planning propose :
-
-* une vue mensuelle
-* une vue trimestrielle
-
----
-
-## Versioning des données
-
-Dans `main.js`, un système de version permet de réinitialiser les données si nécessaire :
-
-```js id="p2k9sd"
-const VERSION_DONNEES = '1.3'
-```
+Deux vues disponibles : mensuelle et trimestrielle.
 
 ---
 
 ## Synchronisation Outlook (Microsoft Graph API)
 
-Préparée mais non active.
+Préparée mais non active. Configuration dans `services/outlook.js` :
 
-Configuration :
-
-```js id="w8d2kf"
+```js
 clientId: 'VOTRE_CLIENT_ID_AZURE'
 authority: 'https://login.microsoftonline.com/VOTRE_TENANT_ID'
 ```
@@ -186,20 +225,10 @@ Permission requise : `Calendars.Read`
 
 ---
 
-## Évolution prévue
+## Évolutions prévues
 
-* Migration vers une base de données (Firebase ou API REST)
-* Synchronisation multi-utilisateurs
-* Export PDF / Excel
-* Amélioration du système de gestion des rôles
-* Intégration avancée Outlook (lecture + écriture)
-
----
-
-## Résumé
-
-Innov’HSE est une application de gestion interne permettant de centraliser le suivi des missions HSE, d’améliorer la visibilité sur la charge de travail et de structurer le pilotage opérationnel. Le projet est conçu de manière évolutive pour intégrer à terme une architecture backend complète.
-
----
-
-
+- Migration vers une base de données (Firebase ou API REST)
+- Synchronisation multi-utilisateurs en temps réel
+- Export PDF / Excel
+- Amélioration du système de gestion des rôles
+- Intégration avancée Outlook (lecture + écriture)
