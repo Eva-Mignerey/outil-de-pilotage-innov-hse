@@ -1,13 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import store from '@/store.js'
 
-const clients  = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user     = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
-
-// Saisies manuelles de facturation par client
-const facturations = ref(JSON.parse(localStorage.getItem('ihse_facturations') || '[]'))
+const clients      = computed(() => store.clients)
+const missions     = computed(() => store.missions)
+const user         = computed(() => store.user || {})
+const facturations = ref([...store.facturations])
 
 const modale     = ref(false)
 const clientSel  = ref(null)
@@ -55,7 +54,7 @@ function sauvegarder() {
     const list = facturations.value.filter(f => f.client_id !== clientSel.value.id)
     list.push({ client_id: clientSel.value.id, ...formFact.value })
     facturations.value = list
-    localStorage.setItem('ihse_facturations', JSON.stringify(list))
+    store.setFacturations(list)
     modale.value = false
 }
 

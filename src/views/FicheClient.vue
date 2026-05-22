@@ -2,14 +2,15 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
+import store from '@/store.js'
 
 const route = useRoute()
 const router = useRouter()
 
-const clients = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const employes = ref(JSON.parse(localStorage.getItem('ihse_employes') || '[]'))
-const user = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const clients  = computed(() => store.clients)
+const missions = computed(() => store.missions)
+const employes = computed(() => store.employes)
+const user     = computed(() => store.user || {})
 
 // Récupérer le client par son id dans l'URL
 const client = computed(() =>

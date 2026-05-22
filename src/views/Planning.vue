@@ -3,11 +3,12 @@ import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
 import { alertesActives } from '../services/alertes.js'
+import store from '@/store.js'
 
-const employes = ref(JSON.parse(localStorage.getItem('ihse_employes') || '[]'))
-const clients  = ref(JSON.parse(localStorage.getItem('ihse_clients')  || '[]'))
-const missions = ref(JSON.parse(localStorage.getItem('ihse_missions') || '[]'))
-const user     = ref(JSON.parse(localStorage.getItem('ihse_user')     || '{}'))
+const employes = computed(() => store.employes)
+const clients  = computed(() => store.clients)
+const missions = computed(() => store.missions)
+const user     = computed(() => store.user || {})
 
 const now           = new Date()
 const annee         = ref(now.getFullYear())
