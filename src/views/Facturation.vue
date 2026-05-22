@@ -3,14 +3,14 @@ import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import store from '@/store.js'
 
-const clients      = computed(() => store.clients)
-const missions     = computed(() => store.missions)
-const user         = computed(() => store.user || {})
+const clients = computed(() => store.clients)
+const missions = computed(() => store.missions)
+const user = computed(() => store.user || {})
 const facturations = ref([...store.facturations])
 
-const modale     = ref(false)
-const clientSel  = ref(null)
-const formFact   = ref({ theorique: '', reel: '', objectif: '', facture: '', commentaire: '' })
+const modale = ref(false)
+const clientSel = ref(null)
+const formFact = ref({ theorique: '', reel: '', objectif: '', facture: '', commentaire: '' })
 
 function joursRealises(clientId) {
     return missions.value.filter(m => m.client_id === clientId && m.statut === 'valide').reduce((s, m) => s + (m.nb_jours || 0), 0)
@@ -41,10 +41,10 @@ function ouvrirFacturation(c) {
     clientSel.value = c
     const f = factClient(c.id)
     formFact.value = {
-        theorique:   f.theorique   || '',
-        reel:        f.reel        || '',
-        objectif:    f.objectif    || '',
-        facture:     f.facture     || '',
+        theorique: f.theorique || '',
+        reel: f.reel || '',
+        objectif: f.objectif || '',
+        facture: f.facture || '',
         commentaire: f.commentaire || ''
     }
     modale.value = true

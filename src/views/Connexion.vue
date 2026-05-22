@@ -22,7 +22,7 @@ function seConnecter() {
     }
 
     const comptes = JSON.parse(localStorage.getItem('ihse_comptes') || '[]')
-    const compte  = comptes.find(c => c.email === email.value && c.password === password.value)
+    const compte = comptes.find(c => c.email === email.value && c.password === password.value)
 
     if (!compte) {
         messageErreur.value = 'Email ou mot de passe incorrect.'

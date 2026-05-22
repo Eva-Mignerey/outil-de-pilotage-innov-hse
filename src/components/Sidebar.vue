@@ -62,7 +62,7 @@ import { useRouter } from 'vue-router'
 import store from '@/store.js'
 
 defineProps({
-    user:      { type: Object, default: () => ({}) },
+    user: { type: Object, default: () => ({}) },
     nbAlertes: { type: Number, default: 0          }
 })
 defineEmits(['voirAlertes'])

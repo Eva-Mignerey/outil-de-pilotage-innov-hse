@@ -23,7 +23,7 @@ const icones = {
 const CLE_SESSION = 'ihse_toasts_affichés'
 
 function dejaMontres() {
- 	 return sessionStorage.getItem(CLE_SESSION) === '1'
+ 	return sessionStorage.getItem(CLE_SESSION) === '1'
 }
 
 function marquerMontres() {

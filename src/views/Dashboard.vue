@@ -6,9 +6,9 @@ import { alertesActives } from '../services/alertes.js'
 import store from '@/store.js'
 
 const employes = computed(() => store.employes)
-const clients  = computed(() => store.clients)
+const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
-const user     = computed(() => store.user || {})
+const user = computed(() => store.user || {})
 
 const annee = new Date().getFullYear()
 const moisEnCours = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
@@ -19,7 +19,7 @@ const moisLabels = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct
 
 const voirAlertes = ref(false)
 
-const alertes   = computed(() => alertesActives(clients.value, missions.value))
+const alertes = computed(() => alertesActives(clients.value, missions.value))
 const nbAlertes = computed(() => alertes.value.length)
 
 const missionsDuMois = computed(() => {
@@ -76,10 +76,10 @@ function joursParMois() {
     return tab
 }
 
-function nomEmploye(id)  { return employes.value.find(e => e.id === id)?.nom?.split(' ')[0] || '—' }
+function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom?.split(' ')[0] || '—' }
 function formaterDate(d) { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) }
-function labelStatut(s)  { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
-function classeBadge(s)  { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
+function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
+function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
 
 const barRef = ref(null)
 const donutRef = ref(null)

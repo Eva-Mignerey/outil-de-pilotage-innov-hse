@@ -30,7 +30,7 @@ const totalRealise = computed(() =>
 
 const voirAlertes = ref(false)
 
-// Alertes actives — clients à risque ou dépassés
+// Alertes actives : clients à risque ou dépassés
 const alertes = computed(() => alertesActives(clients.value, missions.value))
 const nbAlertes = computed(() => alertes.value.length)
 
@@ -58,10 +58,10 @@ function classeAlerte(clientId) {
     const c = clients.value.find(x => x.id === clientId)
     const n = niveauAlerte(r, c?.jours_contractualises)
     return {
-        surplus:   'badge--alerte-surplus',
-        depasse:   'badge--alerte-depasse',
+        surplus: 'badge--alerte-surplus',
+        depasse: 'badge--alerte-depasse',
         attention: 'badge--alerte-attention',
-        ok:        ''
+        ok: ''
     }[n]
 }
 
