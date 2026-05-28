@@ -48,7 +48,7 @@ const categories = [
         { cle: 'ca', label: "Chiffre d'affaires", unite: '€', source: 'EBP' },
         { cle: 'taux_marge', label: 'Taux de marge', unite: '%', source: '' },
         { cle: 'encours', label: 'Encours factures', unite: '€', source: 'EBP' },
-        { cle: 'tresorerie', label: 'Trésorerie', unite: '€', source: 'Banque' },
+        { cle: 'tresorerie', label: 'Trésorerie', unite: '€', source: 'Banque', autoriserNegatif: true },
     ]
 },
 {
@@ -104,7 +104,18 @@ const moisSaisie = ref(moisActuel)
 const valeur = (cle, m = moisSaisie.value) =>
     charges.value[cle]?.[m] || ''
 
+const erreurNegatif = ref(false)
+let erreurTimer = null
+
 const saisir = (cle, val) => {
+    const ind = categories.flatMap(c => c.indicateurs).find(i => i.cle === cle)
+    const num = parseFloat(val)
+    if (!isNaN(num) && num < 0 && !ind?.autoriserNegatif) {
+        erreurNegatif.value = true
+        clearTimeout(erreurTimer)
+        erreurTimer = setTimeout(() => { erreurNegatif.value = false }, 3000)
+        return
+    }
     charges.value[cle] ??= Array(12).fill('')
     charges.value[cle][moisSaisie.value] = val
     store.setCharges(charges.value)
@@ -197,9 +208,13 @@ watch(graphiqueActif, async () => {
                 </select>
                 <span class="mois-select__arrow"></span>
             </div>
-
         </div>
-        
+
+        <Transition name="alerte">
+            <div v-if="erreurNegatif" class="alerte-negatif">
+                ⚠︎ Les valeurs négatives ne sont pas autorisées
+            </div>
+        </Transition>
 
         <div class="page">
 
@@ -252,3 +267,34 @@ watch(graphiqueActif, async () => {
 
 </div>
 </template>
+
+<style scoped>
+.alerte-negatif {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: #fffaeb;
+    color: #755a0b;
+    border: 1px solid #fec109;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+}
+
+.alerte-enter-active,
+.alerte-leave-active {
+    transition: opacity 0.3s ease, top 0.3s ease;
+}
+
+.alerte-enter-from,
+.alerte-leave-to {
+    opacity: 0;
+    top: 4px;
+}
+</style>

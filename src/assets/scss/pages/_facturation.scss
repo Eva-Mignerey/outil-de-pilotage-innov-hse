@@ -1,1 +1,21 @@
 @import '../_layout';
+
+.kpi__info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    font-size: 0.75rem;
+    color: $bleu-fonce;
+    cursor: help;
+    transition: color $transition;
+    vertical-align: middle;
+}
+
+.kpi__sous-label {
+    font-size: 0.72rem;
+    color: rgba($bleu-fonce, 0.45);
+    margin-top: 2px;
+    margin-bottom: 6px;
+    font-style: italic;
+}
