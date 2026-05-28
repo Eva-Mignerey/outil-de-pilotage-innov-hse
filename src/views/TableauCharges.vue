@@ -241,7 +241,7 @@ watch(graphiqueActif, async () => {
                         :cat="cat"
                         :valeur="valeur"
                         :saisir="saisir"
-                    /=>
+                    />
 
                     <button
                         class="charges__btn-evolution"
