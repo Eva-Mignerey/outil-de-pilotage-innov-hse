@@ -22,8 +22,7 @@ const form = ref({
     date_debut: '',
     date_fin: '',
     nb_jours: 1,
-    // Heures fractionnées — saisie manuelle simple
-    heures_supp_client: '',   // ex: "1h pour CARBONEX"
+    heures_supp_client: '',
     statut: 'en_attente'
 })
 

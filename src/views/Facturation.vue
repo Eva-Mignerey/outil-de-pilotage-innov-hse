@@ -40,9 +40,14 @@ function ecart(clientId) {
 function ouvrirFacturation(c) {
     clientSel.value = c
     const f = factClient(c.id)
+
+    // Calcul automatique si pas encore saisi manuellement
+    const theorAuto = Math.round((c.taux_journalier || 0) * (c.jours_contractualises || 0))
+    const reelAuto = Math.round((c.taux_journalier || 0) * joursRealises(c.id))
+
     formFact.value = {
-        theorique: f.theorique || '',
-        reel: f.reel || '',
+        theorique: f.theorique !== undefined && f.theorique !== '' ? f.theorique : theorAuto || '',
+        reel: f.reel !== undefined && f.reel !== '' ? f.reel : reelAuto  || '',
         objectif: f.objectif || '',
         facture: f.facture || '',
         commentaire: f.commentaire || ''
@@ -53,7 +58,7 @@ function ouvrirFacturation(c) {
 function sauvegarder() {
     const list = facturations.value.filter(f => f.client_id !== clientSel.value.id)
     list.push({ client_id: clientSel.value.id, ...formFact.value })
-    facturations.value = list
+    facturations.value = 
     store.setFacturations(list)
     modale.value = false
 }
@@ -80,18 +85,29 @@ const totalFacture = computed(() =>
 
             <div class="page">
 
-                <!-- KPIs globaux -->
                 <div class="kpi-grille" style="grid-template-columns:repeat(3,1fr)">
                     <div class="kpi kpi--accent">
-                        <div class="kpi__label">Total théorique</div>
+                        <div class="kpi__label">
+                            Total théorique
+                            <span class="kpi__info" title="Somme des montants théoriques. Prérempli automatiquement (taux journalier × jours contractualisés) mais modifiable manuellement dans le tableau.">ⓘ</span>
+                        </div>
+                        <div class="kpi__sous-label">Taux journalier × jours contractualisés</div>
                         <div class="kpi__valeur">{{ totalTheorique.toLocaleString('fr-FR') }} €</div>
                     </div>
                     <div class="kpi" :class="totalReel >= totalTheorique ? 'kpi--vert' : 'kpi--rouge'">
-                        <div class="kpi__label">Total réel</div>
+                        <div class="kpi__label">
+                            Total réel
+                            <span class="kpi__info" title="Somme des montants réels. Prérempli automatiquement (taux journalier × jours réalisés sur missions validées) mais modifiable manuellement dans le tableau.">ⓘ</span>
+                        </div>
+                        <div class="kpi__sous-label">Taux journalier × jours réalisés</div>
                         <div class="kpi__valeur">{{ totalReel.toLocaleString('fr-FR') }} €</div>
                     </div>
                     <div class="kpi">
-                        <div class="kpi__label">Total facturé</div>
+                        <div class="kpi__label">
+                            Total facturé
+                            <span class="kpi__info" title="Somme des montants facturés saisis manuellement dans le tableau. Correspond aux factures effectivement émises aux clients. Peut différer du réel si une facture n'a pas encore été envoyée.">ⓘ</span>
+                        </div>
+                        <div class="kpi__sous-label">Somme des factures émises saisies</div>
                         <div class="kpi__valeur">{{ totalFacture.toLocaleString('fr-FR') }} €</div>
                     </div>
                 </div>
@@ -113,7 +129,7 @@ const totalFacture = computed(() =>
                                         <th>Avancement</th>
                                         <th>Théorique (€)</th>
                                         <th>Réel (€)</th>
-                                        <th>Objectif (€)</th>
+                                        <th>Objectif avant signature du contrat (€)</th>
                                         <th>Facturé (€)</th>
                                         <th>Écart</th>
                                         <th>Saisir</th>
@@ -175,11 +191,11 @@ const totalFacture = computed(() =>
                             <input v-model="formFact.reel" type="number" />
                         </div>
                         <div class="champ">
-                            <label>Objectif (€)</label>
+                            <label>Objectif avant signature du contrat (€)</label>
                             <input v-model="formFact.objectif" type="number" />
                         </div>
                         <div class="champ">
-                            <label>Facturé (€)</label>
+                            <label>Facturé <br>(€)</label>
                             <input v-model="formFact.facture" type="number" />
                         </div>
                     </div>

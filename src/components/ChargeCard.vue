@@ -31,6 +31,7 @@ defineProps({
                 type="number"
                 :placeholder="ind.unite || '0'"
                 :value="valeur(ind.cle)"
+                :min="ind.autoriserNegatif ? undefined : 0"
                 @input="saisir(ind.cle, $event.target.value)"
             />
 
