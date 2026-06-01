@@ -52,7 +52,7 @@ function classeProgression(p) {
         <div class="layout__main">
             <div class="topbar">
                 <span class="topbar__titre">
-                    <button class="fiche__retour" @click="router.push('/clients')">← Clients</button>
+                    <button class="fiche__retour" @click="router.push('/clients')">⇽ Retour page Clients</button> |
                     {{ client?.nom }}
                 </span>
             </div>
@@ -153,3 +153,22 @@ function classeProgression(p) {
         </div>
     </div>
 </template>
+
+<style scoped>
+.fiche__retour {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 100px;
+    background-color: #008BD0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fiche__retour:hover {
+    background-color: #315691;
+    color: white;
+}
+</style>

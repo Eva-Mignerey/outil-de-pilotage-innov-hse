@@ -108,7 +108,6 @@
     cursor: pointer;
     border: 1px solid rgba($rouge-danger, 0.5);
     transition: background $transition, color $transition;
-    title: "Se déconnecter";
 
     &:hover {
         background: rgba($rouge-danger, 0.75);

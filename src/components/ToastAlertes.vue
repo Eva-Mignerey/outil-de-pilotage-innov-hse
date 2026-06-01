@@ -42,8 +42,8 @@ function afficherToasts() {
         const id = Date.now() + i
         setTimeout(() => {
             toasts.value.push({ id, ...a, sortie: false })
-            setTimeout(() => fermer(id), 60000)
-        }, i * 200)
+            setTimeout(() => fermer(id), 4000)
+        }, i * 150)
     })
 }
 
@@ -111,8 +111,8 @@ watch(alertes, (nouvelles) => {
     animation:slide .3s;
 }
 
-.notif.attention{border-color:#eab308}
-.notif.depasse{border-color:#ef4444}
+.notif.attention{border-color:#e9bc08}
+.notif.depasse{border-color:#ee5711}
 .notif.surplus{border-color:#dc2626}
 
 .contenu{flex:1}

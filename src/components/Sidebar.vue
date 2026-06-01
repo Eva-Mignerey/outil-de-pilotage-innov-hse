@@ -1,3 +1,25 @@
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import store from '@/store.js'
+import { estAdmin } from '@/permissions.js'
+
+defineProps({
+    user: { type: Object, default: () => ({}) },
+    nbAlertes: { type: Number, default: 0          }
+})
+defineEmits(['voirAlertes'])
+
+const ouvert = ref(false)
+const router = useRouter()
+
+function seDeconnecter() {
+    store.setUser(null)
+    sessionStorage.removeItem('ihse_toasts_affichés')
+    router.push('/connexion')
+}
+</script>
+
 <template>
     <div class="mobile-topbar">
         <img src="/logo.svg" alt="Innov'HSE" class="mobile-topbar__logo" />
@@ -16,33 +38,33 @@
 
     <aside class="layout__sidebar" :class="{ 'sidebar--ouvert': ouvert }">
         <div class="sidebar__logo">
-            <img class="sidebar__logo-img" src="/logo.svg" alt="Innov'HSE" loading="eager" fetchpriority="high" />
+            <img class="sidebar__logo-img" src="/logo.svg" alt="Innov'HSE" loading="eager" fetchpriority="high" style="width: 180px; height: auto;" />
         </div>
 
         <nav class="sidebar__nav">
-            <router-link class="sidebar__btn" to="/dashboard"   active-class="actif" @click="ouvert = false">
-                <span class="sidebar__icone">◈</span><span>Tableau de bord</span>
+            <router-link class="sidebar__btn" to="/accueil" active-class="actif" @click="ouvert = false">
+                <span class="sidebar__icone">◈</span><span>Accueil</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/planning"    active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/planning" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">▦</span><span>Planning</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/prospects"   active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/prospects" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◐</span><span>Prospects</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/clients"     active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/clients" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◉</span><span>Clients</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/missions"    active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/missions" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◆</span><span>Missions / Tâches</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/employes"    active-class="actif" @click="ouvert = false">
+            <router-link class="sidebar__btn" to="/equipe" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◎</span><span>Équipe</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/facturation" active-class="actif" @click="ouvert = false">
+            <router-link v-if="estAdmin" class="sidebar__btn" to="/facturation" active-class="actif" @click="ouvert = false">
                 <span class="sidebar__icone">◧</span><span>Facturation</span>
             </router-link>
-            <router-link class="sidebar__btn" to="/tableau-charges" active-class="actif" @click="ouvert = false">
-                <span class="sidebar__icone">▨</span><span>Tableau de charges</span>
+            <router-link class="sidebar__btn" to="/tableau-bord" active-class="actif" @click="ouvert = false">
+                <span class="sidebar__icone">▨</span><span>Tableau de bord</span>
             </router-link>
         </nav>
 
@@ -51,28 +73,7 @@
                 <div class="user-nom">{{ user.nom }}</div>
                 <div class="user-role">{{ user.profil === 'admin' ? 'Administrateur' : 'Consultant' }}</div>
             </div>
-            <button class="sidebar__deconnexion" @click="seDeconnecter" title="Se déconnecter">⏻</button>
+            <button class="sidebar__deconnexion" @click="seDeconnecter" title="Se déconnecter de la session">⏻</button>
         </div>
     </aside>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import store from '@/store.js'
-
-defineProps({
-    user: { type: Object, default: () => ({}) },
-    nbAlertes: { type: Number, default: 0          }
-})
-defineEmits(['voirAlertes'])
-
-const ouvert = ref(false)
-const router = useRouter()
-
-function seDeconnecter() {
-    store.setUser(null)
-    sessionStorage.removeItem('ihse_toasts_affichés')
-    router.push('/connexion')
-}
-</script>

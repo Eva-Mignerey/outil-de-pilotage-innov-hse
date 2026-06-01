@@ -5,7 +5,7 @@ $orange: #DC9034;
 $vert: #A5C35A;
 $rouge-danger: #E84B4B;
 $gris: #8092A4;
-$remplissage: rgba(128, 146, 164, 0.251);
+$remplissage: rgba(128, 146, 164, 0.25);
 $blanc: #FFFFFF;
 $noir: #000000;
 
@@ -290,7 +290,7 @@ h1, h2, h3 {
     }
 }
 
-// KPIS
+// kpis
 .kpi-grille {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -347,24 +347,30 @@ h1, h2, h3 {
 // responsive
 @media (max-width: $mobile) {
 
-    .layout__sidebar {
-        transform: translateX(-100%);
-
-        &.sidebar--ouvert {
-            transform: translateX(0);
-        }
-    }
-
     .layout__main {
         margin-left: 0;
         padding-top: $topbar-hauteur;
     }
 
     .page {
-        padding: 16px;
+        padding: 12px;
     }
 
     .topbar {
         display: none;
+    }
+
+    .kpi-grille {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .kpi {
+        padding: 14px;
+
+        &__valeur {
+            font-size: 1.4rem;
+        }
     }
 }

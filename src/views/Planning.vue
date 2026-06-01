@@ -28,7 +28,6 @@ const titreMois = computed(() =>
     new Date(annee.value, mois.value).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 )
 
-// Jours du mois pour le calendrier
 const jours = computed(() => {
     const nb = new Date(annee.value, mois.value + 1, 0).getDate()
     return Array.from({ length: nb }, (_, i) => {
@@ -43,7 +42,6 @@ const jours = computed(() => {
     })
 })
 
-// Jours ouvrés d'un mois donné
 function joursOuvres(a, m) {
     const nb = new Date(a, m + 1, 0).getDate()
     let count = 0
@@ -56,7 +54,6 @@ function joursOuvres(a, m) {
 
 const joursOuvresMois = computed(() => joursOuvres(annee.value, mois.value))
 
-// Missions d'un employé pour un mois donné
 function missionsDuMois(empId, a, m) {
     const debut = new Date(a, m, 1).toISOString().split('T')[0]
     const fin   = new Date(a, m + 1, 0).toISOString().split('T')[0]
@@ -65,7 +62,6 @@ function missionsDuMois(empId, a, m) {
     )
 }
 
-// Jours planifiés (validés) d'un employé pour un mois
 function joursPlannifies(empId, a, m) {
     return missionsDuMois(empId, a, m)
         .filter(x => x.statut === 'valide')
@@ -79,7 +75,6 @@ function joursAPlanifier(empId, a, m) {
         .reduce((s, x) => s + (x.nb_jours || 0), 0)
 }
 
-// Formules :
 // jours_dus = jours_plannifies + jours_a_planifier
 // jours_non_charges = jours_ouvres - jours_dus
 function joursDus(empId, a, m) {
@@ -90,9 +85,7 @@ function joursNonCharges(empId, a, m) {
     return Math.max(joursOuvres(a, m) - joursDus(empId, a, m), 0)
 }
 
-// 3 mois du trimestre en cours
 const trimestre = computed(() => {
-    // On prend le mois du calendrier et les 2 suivants
     return [0, 1, 2].map(i => {
         const m2 = (mois.value + i) % 12
         const a2 = annee.value + Math.floor((mois.value + i) / 12)
@@ -105,21 +98,18 @@ const trimestre = computed(() => {
     })
 })
 
-// Filtrage des employés pour le tableau
 const employesFiltres = computed(() =>
     filtreEmploye.value
         ? employes.value.filter(e => e.id === Number(filtreEmploye.value))
         : employes.value
 )
 
-// Mission du jour pour un employé donné
 function missionDuJour(empId, date) {
     return missions.value.find(m =>
         m.employe_id === empId && date >= m.date_debut && date <= m.date_fin
     )
 }
 
-// Couleur associée à un client
 function couleurClient(clientId) {
     const i = clients.value.findIndex(c => c.id === clientId)
     return couleurs[i % couleurs.length]
@@ -133,7 +123,6 @@ function tauxCharge(empId) {
     return Math.min(Math.round((j / (emp.capacite_jours || 1)) * 100), 100)
 }
 
-// Alerte si un employé à plus de jours planifiés que de jours ouvrés dans le mois 
 function alertePlanningEmploye(empId) {
     const realise = joursPlannifies(empId, annee.value, mois.value)
     if (realise > joursOuvresMois.value) return { type: 'surplus', msg: `+${realise - joursOuvresMois.value}j ce mois` }
@@ -141,7 +130,6 @@ function alertePlanningEmploye(empId) {
     return null
 }
 
-// Utilitaires
 function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom || '—' }
 function formaterDate(d) { return new Date(d).toLocaleDateString('fr-FR') }
 function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
@@ -150,7 +138,6 @@ function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--
 function moisPrecedent() { mois.value === 0  ? (mois.value = 11, annee.value--) : mois.value-- }
 function moisSuivant() { mois.value === 11 ? (mois.value = 0,  annee.value++) : mois.value++ }
 
-// Couleur de l'écart : rouge = surchargé, vert =sous-chargé, gris = équilibré
 function couleurEcart(ecart) {
     if (ecart > 0) return '#E84B4B'
     if (ecart < 0) return '#8092A4'

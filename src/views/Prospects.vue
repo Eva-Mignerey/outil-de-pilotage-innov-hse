@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import store from '@/store.js'
+import { estAdmin } from '@/permissions.js'
 
 const prospects = ref([...store.prospects])
 const clients = ref([...store.clients])
@@ -189,7 +190,7 @@ function fermerModale() { modale.value = false; edition.value = null }
             <div class="topbar">
                 <span class="topbar__titre">Prospects</span>
                 <div class="topbar__actions">
-                    <button class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Nouveau prospect</button>
+                    <button v-if="estAdmin" class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Nouveau prospect</button>
                 </div>
             </div>
 
@@ -258,24 +259,27 @@ function fermerModale() { modale.value = false; edition.value = null }
                                         </td>
                                         <td>
                                             <div class="clients__actions">
-                                                <button
-                                                    class="btn btn--fantome btn--petit"
-                                                    @click="p._estClient ? ouvrirEditionClient(p) : ouvrirEdition(p)"
-                                                    title="Éditer"
-                                                >✎</button>
-                                                <template v-if="!p._estClient">
+                                                <template v-if="estAdmin">
                                                     <button
-                                                        v-if="p.statut !== 'termine'"
-                                                        class="btn btn--valider btn--petit"
-                                                        @click="convertirEnClient(p)"
-                                                        title="Convertir en client"
-                                                    >→ Client</button>
+                                                        class="btn btn--fantome btn--petit"
+                                                        @click="p._estClient ? ouvrirEditionClient(p) : ouvrirEdition(p)"
+                                                        title="Éditer"
+                                                    >✎</button>
+                                                    <template v-if="!p._estClient">
+                                                        <button
+                                                            v-if="p.statut !== 'termine'"
+                                                            class="btn btn--valider btn--petit"
+                                                            @click="convertirEnClient(p)"
+                                                            title="Convertir en client"
+                                                        >→ Client</button>
+                                                    </template>
+                                                    <button
+                                                        class="btn btn--danger btn--petit"
+                                                        @click="demanderSuppression(p)"
+                                                        title="Supprimer"
+                                                    >✕</button>
                                                 </template>
-                                                <button
-                                                    class="btn btn--danger btn--petit"
-                                                    @click="demanderSuppression(p)"
-                                                    title="Supprimer"
-                                                >✕</button>
+                                                <span v-else style="font-size:.78rem;color:#8092A4">—</span>
                                             </div>
                                         </td>
                                     </tr>

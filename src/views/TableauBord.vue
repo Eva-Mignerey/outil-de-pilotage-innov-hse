@@ -82,9 +82,13 @@ const categories = [
     couleur: '#1A6B8A',
     picto: '/src/assets/images/communication.svg',
     indicateurs: [
-        { cle: 'publications', label: 'Publications', source: 'LinkedIn' },
-        { cle: 'reactions', label: 'Réactions', source: 'LinkedIn' },
-        { cle: 'retours', label: 'Retours (réel)', source: 'Équipes' },
+        { cle: 'nb_abonnes', label: 'Nombre d\'abonnés' },
+        { cle: 'impressions', label: 'Impressions' },
+        { cle: 'taux_engagement', label: 'Taux d\'engagement', unite: '%' },
+        { cle: 'nb_publication', label: 'Publications' },
+        { cle: 'ctr', label: 'CTR', unite: '%' },
+        { cle: 'nb_reactions', label: 'Nombre de réactions' },
+        { cle: 'nb_prise_contact_linkedin', label: 'Prises de contact grâce à LinkedIn', source: 'LinkedIn' },
     ]
 }
 ]
@@ -197,9 +201,7 @@ watch(graphiqueActif, async () => {
 
     <div class="layout__main">
         <div class="topbar">
-            <span class="topbar__titre">
-                Tableau des charges
-            </span>
+            <span class="topbar__titre">Tableau de bord</span>
             <div class="mois-select">
                 <select v-model="moisSaisie" class="mois-select__input">
                     <option v-for="(m,i) in nomsMois" :key="i" :value="i">
@@ -276,7 +278,7 @@ watch(graphiqueActif, async () => {
     transform: translateX(-50%);
     padding: 8px 16px;
     background: #fffaeb;
-    color: #755a0b;
+    color: #8d6900;
     border: 1px solid #fec109;
     border-radius: 8px;
     font-size: 0.82rem;
