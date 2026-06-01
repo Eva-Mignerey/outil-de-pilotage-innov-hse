@@ -4,10 +4,11 @@ import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
 import { alertesActives, niveauAlerte, messageAlerte } from '../services/alertes.js'
 import store from '@/store.js'
+import { estAdmin } from '@/permissions.js'
 
-const clients  = ref([...store.clients])
+const clients = ref([...store.clients])
 const missions = computed(() => store.missions)
-const user     = computed(() => store.user || {})
+const user = computed(() => store.user || {})
 
 const recherche = ref('')
 const modale = ref(false)
@@ -194,8 +195,10 @@ function fermerModale() { modale.value = false; edition.value = null }
                                         <td>
                                             <div class="clients__actions">
                                                 <router-link :to="'/clients/' + c.id" class="btn btn--fantome btn--petit" title="Voir la fiche">👁</router-link>
-                                                <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(c)">Éditer</button>
-                                                <button class="btn btn--danger btn--petit" @click="demanderSuppression(c)">Suppr.</button>
+                                                <template v-if="estAdmin">
+                                                    <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(c)">Éditer</button>
+                                                    <button class="btn btn--danger btn--petit" @click="demanderSuppression(c)">Suppr.</button>
+                                                </template>
                                             </div>
                                         </td>
                                     </tr>
@@ -227,6 +230,10 @@ function fermerModale() { modale.value = false; edition.value = null }
                     <div class="champ">
                         <label>Jours contractualisés *</label>
                         <input v-model.number="form.jours_contractualises" type="number" min="1" />
+                    </div>
+                    <div v-if="estAdmin" class="champ">
+                        <label>Taux journalier (€)</label>
+                        <input v-model.number="form.taux_journalier" type="number" min="0" placeholder="Ex : 500" />
                     </div>
                 </div>
                 <div class="modale__pied">

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import store from '@/store.js'
+import { estAdmin } from '@/permissions.js'
 
 const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
@@ -161,7 +162,8 @@ const totalFacture = computed(() =>
                                             <span v-else style="color:#8092A4">—</span>
                                         </td>
                                         <td>
-                                            <button class="btn btn--fantome btn--petit" @click="ouvrirFacturation(c)">✎</button>
+                                            <button v-if="estAdmin" class="btn btn--fantome btn--petit" @click="ouvrirFacturation(c)">✎</button>
+                                            <span v-else style="color:#8092A4;font-size:.78rem">—</span>
                                         </td>
                                     </tr>
                                 </tbody>

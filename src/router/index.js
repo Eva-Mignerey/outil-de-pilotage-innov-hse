@@ -1,87 +1,82 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Connexion   from '../views/Connexion.vue'
-import Inscription from '../views/Inscription.vue'
-import Dashboard   from '../views/Dashboard.vue'
-import Planning    from '../views/Planning.vue'
-import Clients     from '../views/Clients.vue'
-import FicheClient from '../views/FicheClient.vue'
-import Missions    from '../views/Missions.vue'
-import Employes    from '../views/Employes.vue'
-import Prospects   from '../views/Prospects.vue'
-import Facturation from '../views/Facturation.vue'
-import TableauCharges from '../views/TableauCharges.vue'
-
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         { 
-            path: '/',
-            redirect: '/connexion'  
+            path: '/', 
+            redirect: '/connexion' 
         },
         { 
             path: '/connexion', 
-            component: Connexion, 
-            name: 'connexion'
+            name: 'connexion', 
+            component: () => import('../views/Connexion.vue') 
         },
         { 
             path: '/inscription', 
-            component: Inscription, 
-            name: 'inscription'  
+            name: 'inscription', 
+            component: () => import('../views/Inscription.vue') 
         },
         { 
-            path: '/dashboard',   
-            component: Dashboard,   
-            name: 'dashboard'    
+            path: '/accueil', 
+            name: 'accueil', 
+            component: () => import('../views/Accueil.vue') 
         },
         { 
-            path: '/planning',    
-            component: Planning,    
-            name: 'planning'     
+            path: '/planning', 
+            name: 'planning', 
+            component: () => import('../views/Planning.vue') 
         },
         { 
-            path: '/clients',     
-            component: Clients,     
-            name: 'clients'      
+            path: '/clients', 
+            name: 'clients', 
+            component: () => import('../views/Clients.vue') 
         },
         { 
             path: '/clients/:id', 
-            component: FicheClient, 
-            name: 'fiche-client' 
+            name: 'fiche-client', 
+            component: () => import('../views/FicheClient.vue') 
         },
         { 
-            path: '/missions',    
-            component: Missions,    
-            name: 'missions'     
+            path: '/missions', 
+            name: 'missions', 
+            component: () => import('../views/Missions.vue') 
         },
         { 
-            path: '/employes',
-            component: Employes,    
-            name: 'employes'     
+            path: '/equipe', 
+            name: 'equipe', 
+            component: () => import('../views/Equipe.vue') 
         },
         { 
-            path: '/prospects',   
-            component: Prospects,   
-            name: 'prospects'    
+            path: '/prospects', 
+            name: 'prospects', 
+            component: () => import('../views/Prospects.vue') 
         },
         { 
-            path: '/facturation',   
-            component: Facturation,   
-            name: 'facturation'    
+            path: '/facturation', 
+            name: 'facturation', 
+            component: () => import('../views/Facturation.vue') 
         },
         { 
-            path: '/tableau-charges',   
-            component: TableauCharges,   
-            name: 'tableau-charges'    
-        }
+            path: '/tableau-bord', 
+            name: 'tableau-bord', 
+            component: () => import('../views/TableauBord.vue') 
+        },
     ]
 })
 
 router.beforeEach((to) => {
     const pagesPubliques = ['/connexion', '/inscription']
-    const connecte = localStorage.getItem('ihse_user')
+    const user = JSON.parse(localStorage.getItem('ihse_user') || 'null')
+    const connecte = !!user
+
     if (!pagesPubliques.includes(to.path) && !connecte) {
         return '/connexion'
+    }
+
+    const pagesAdmin = ['/facturation']
+    if (pagesAdmin.includes(to.path) && user?.profil !== 'admin') {
+        return '/dashboard'
     }
 })
 
