@@ -7,19 +7,15 @@ import store from '@/store.js'
 const route = useRoute()
 const router = useRouter()
 
-const clients = computed(() => store.clients)
-const missions = computed(() => store.missions)
-const employes = computed(() => store.employes)
 const user = computed(() => store.user || {})
+const employes = computed(() => store.employes)
 
-// Récupérer le client par son id dans l'URL
 const client = computed(() =>
-    clients.value.find(c => c.id === Number(route.params.id))
+    store.clients.find(c => c.id === Number(route.params.id))
 )
 
-// Missions de ce client
 const missionsClient = computed(() =>
-    missions.value
+    store.missions
         .filter(m => m.client_id === Number(route.params.id))
         .sort((a, b) => new Date(b.date_debut) - new Date(a.date_debut))
 )
@@ -37,11 +33,32 @@ function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom || '
 function formaterDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR') : '—' }
 function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
 function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
-
 function classeProgression(p) {
     if (p >= 90) return 'progression__barre--danger'
     if (p >= 70) return 'progression__barre--alerte'
     return 'progression__barre--ok'
+}
+
+const extra = (champ, defaut = '') => store.getClientExtra(client.value?.id, champ, defaut)
+const sauver = (champ, valeur) => store.setClientExtra(client.value.id, champ, valeur)
+
+const mail = computed({ get: () => extra('mail'), set: (v) => sauver('mail', v) })
+const telephone = computed({ get: () => extra('telephone'), set: (v) => sauver('telephone', v) })
+const titulaire = computed({ get: () => extra('titulaire_id'), set: (v) => sauver('titulaire_id', v ? Number(v) : null) })
+const suppleant = computed({ get: () => extra('suppleant_id'), set: (v) => sauver('suppleant_id', v ? Number(v) : null) })
+const missionsTypes = computed(() => extra('missions_types', []))
+
+const tagInput = ref('')
+
+const ajouterTag = () => {
+    const val = tagInput.value.trim()
+    if (!val || missionsTypes.value.includes(val)) return
+    sauver('missions_types', [...missionsTypes.value, val])
+    tagInput.value = ''
+}
+
+const supprimerTag = (tag) => {
+    sauver('missions_types', missionsTypes.value.filter(t => t !== tag))
 }
 </script>
 
@@ -59,7 +76,6 @@ function classeProgression(p) {
 
             <div class="page" v-if="client">
 
-                <!-- KPIs du client -->
                 <div class="kpi-grille" style="grid-template-columns: repeat(3, 1fr)">
                     <div class="kpi kpi--accent">
                         <div class="kpi__label">Jours contractualisés</div>
@@ -75,12 +91,11 @@ function classeProgression(p) {
                     </div>
                 </div>
 
-                <!-- Barre de progression -->
                 <div class="carte" style="margin-bottom:18px">
                     <div class="carte__corps">
-                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-family:'Poppins',sans-serif;font-size:.85rem">
+                        <div class="fiche__progression-header">
                             <span><strong>{{ client.nom }}</strong> — {{ client.secteur || 'Secteur non renseigné' }}</span>
-                            <span style="font-weight:700;color:#315691">{{ pct }}%</span>
+                            <span class="fiche__progression-pct">{{ pct }}%</span>
                         </div>
                         <div class="progression" style="height:12px">
                             <div
@@ -89,13 +104,70 @@ function classeProgression(p) {
                                 :style="{ width: pct + '%' }"
                             ></div>
                         </div>
-                        <div style="margin-top:6px;font-size:.78rem;color:#8092A4;font-family:'Poppins',sans-serif">
+                        <div class="fiche__progression-label">
                             {{ joursRealises }}j réalisés sur {{ client.jours_contractualises }}j contractualisés
                         </div>
                     </div>
                 </div>
 
-                <!-- Liste des missions -->
+                <div class="fiche__grille">
+
+                    <div class="carte">
+                        <div class="carte__entete"><h2>Contact</h2></div>
+                        <div class="carte__corps">
+                            <div class="champ">
+                                <label>Adresse e-mail</label>
+                                <input type="email" :value="mail" @change="mail = $event.target.value" placeholder="contact@exemple.fr" />
+                            </div>
+                            <div class="champ" style="margin-bottom:0">
+                                <label>Téléphone</label>
+                                <input type="tel" :value="telephone" @change="telephone = $event.target.value" placeholder="06 00 00 00 00" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carte">
+                        <div class="carte__entete"><h2>Personnes référentes</h2></div>
+                        <div class="carte__corps">
+                            <div class="champ">
+                                <label>Titulaire</label>
+                                <select :value="titulaire" @change="titulaire = $event.target.value">
+                                    <option value="">— Sélectionner —</option>
+                                    <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
+                                </select>
+                            </div>
+                            <div class="champ" style="margin-bottom:0">
+                                <label>Suppléant</label>
+                                <select :value="suppleant" @change="suppleant = $event.target.value">
+                                    <option value="">— Sélectionner —</option>
+                                    <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carte fiche__grille-full">
+                        <div class="carte__entete"><h2>Types de missions demandées</h2></div>
+                        <div class="carte__corps">
+                            <div class="fiche__tags">
+                                <span v-for="tag in missionsTypes" :key="tag" class="fiche__tag">
+                                    {{ tag }}
+                                    <button class="fiche__tag-suppr" @click="supprimerTag(tag)">×</button>
+                                </span>
+                                <span v-if="missionsTypes.length === 0" class="fiche__tags-vide">Aucun type renseigné</span>
+                            </div>
+                            <div class="fiche__tag-input">
+                                <input
+                                    v-model="tagInput"
+                                    placeholder="Ajouter un type de mission…"
+                                    @keydown.enter.prevent="ajouterTag"
+                                />
+                                <button class="btn btn--primaire btn--petit" @click="ajouterTag">Ajouter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="carte">
                     <div class="carte__entete">
                         <h2>Missions ({{ missionsClient.length }})</h2>
@@ -137,7 +209,6 @@ function classeProgression(p) {
 
             </div>
 
-            <!-- Client introuvable -->
             <div class="page" v-else>
                 <div class="carte">
                     <div class="carte__corps" style="text-align:center;padding:40px;color:#8092A4">
@@ -153,22 +224,3 @@ function classeProgression(p) {
         </div>
     </div>
 </template>
-
-<style scoped>
-.fiche__retour {
-    border: none;
-    padding: 6px 12px;
-    border-radius: 100px;
-    background-color: #008BD0;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.fiche__retour:hover {
-    background-color: #315691;
-    color: white;
-}
-</style>

@@ -1,15 +1,11 @@
 @import '../layout';
 
-/* ligne catégorie */
-
 .charges__ligne {
     display: flex;
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 14px;
 }
-
-/* label catégorie */
 
 .charges__cat-label {
     display: flex;
@@ -32,8 +28,6 @@
     text-transform: uppercase;
     letter-spacing: .04em;
 }
-
-/* cartes */
 
 .charges__cartes {
     display: flex;
@@ -61,7 +55,6 @@
         transform: translateY(-1px);
     }
 
-    /* barre couleur haut */
     &::before {
         content: '';
         display: block;
@@ -80,8 +73,6 @@
         }
     }
 }
-
-/* bouton voir l'évolution */
 
 .charges__btn-evolution {
     display: inline-flex;
@@ -109,8 +100,6 @@
     font-size: 1rem;
 }
 
-/* première moitié des cartes */
-
 .charges__carte-haut {
     padding: 8px 10px 4px;
     flex: 1;
@@ -130,8 +119,6 @@
     color: $gris;
     margin-top: 3px;
 }
-
-/* deuxième moitié des cartes */
 
 .charges__carte-bas {
     padding: 6px 10px 10px;
@@ -175,7 +162,7 @@
     flex-shrink: 0;
 }
 
-/* version pc */
+/* pc */
 
 @media (min-width: $mobile) {
 
@@ -199,7 +186,7 @@
     }
 }
 
-/* version mobile */
+/* mobile */
 
 @media (max-width: $mobile) {
 
@@ -229,7 +216,7 @@
 
     font-family: "Poppins", sans-serif;
     font-size: 0.83rem;
-    color: #000;
+    color: $noir;
 
     cursor: pointer;
     outline: none;
@@ -252,7 +239,7 @@
 
     font-family: "Poppins", sans-serif;
     font-size: 0.83rem;
-    color: #000;
+    color: $noir;
 
     cursor: pointer;
     outline: none;
@@ -274,9 +261,36 @@
 
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 6px solid rgba(0, 0, 0, 0.6);
+    border-top: 6px solid (rgba(0, 0, 0, 0.6));
 }
 
 .mois-select__input:focus {
-    border-color: rgba(128, 146, 164, 0.5);
+    border-color: $bordure;
+}
+
+.charges__objectif {
+    display: flex;
+    align-items: center;
+    padding: 4px 6px;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: #1A6B8A;
+}
+
+.charges__objectif-badge {
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.charges__objectif-badge--ok {
+    background: rgba($vert, 0.2);
+    color: $vert;
+}
+
+.charges__objectif-badge--ko {
+    background: rgba($rouge-danger, 0.2);
+    color: $rouge-danger;
 }

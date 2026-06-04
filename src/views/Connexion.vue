@@ -30,7 +30,7 @@ function seConnecter() {
     }
 
     store.setUser(compte)
-    router.push('/dashboard')
+    router.push('/accueil')
 }
 </script>
 
@@ -38,7 +38,7 @@ function seConnecter() {
     <div class="auth-bg">
         <div class="auth-carte">
 
-        <img class="auth-logo" src="/logo.svg" alt="Innov'HSE" />
+        <img class="auth-logo" src="/images/logo.svg" alt="Innov'HSE" />
 
         <h1 class="auth-titre">Connexion</h1>
 

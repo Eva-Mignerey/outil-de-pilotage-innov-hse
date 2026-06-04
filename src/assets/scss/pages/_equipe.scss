@@ -1,0 +1,60 @@
+@import '../layout';
+
+// Grille de cartes consultants
+.employes__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.employes__carte {
+    margin-bottom: 0;
+}
+
+.employes__taux-label {
+    font-family: $font-moyenne;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $bleu-fonce;
+    margin-bottom: 6px;
+}
+
+.employes__infos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.employes__info-ligne {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid $bordure;
+
+    &:last-child { border-bottom: none; }
+}
+
+.employes__info-label { color: $gris; }
+.employes__info-val   { font-weight: 600; color: $noir; }
+
+.employes__email {
+    font-size: 0.78rem;
+    color: $bleu-clair;
+}
+
+.employes__actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+@media (max-width: $mobile) {
+    .employes__grille {
+        grid-template-columns: 1fr;
+    }
+}

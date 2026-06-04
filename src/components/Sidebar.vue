@@ -38,7 +38,7 @@ function seDeconnecter() {
 
     <aside class="layout__sidebar" :class="{ 'sidebar--ouvert': ouvert }">
         <div class="sidebar__logo">
-            <img class="sidebar__logo-img" src="/logo.svg" alt="Innov'HSE" loading="eager" fetchpriority="high" style="width: 180px; height: auto;" />
+            <img class="sidebar__logo-img" src="/images/logo.svg" alt="Innov'HSE" loading="eager" fetchpriority="high" style="width: 180px; height: auto;" />
         </div>
 
         <nav class="sidebar__nav">

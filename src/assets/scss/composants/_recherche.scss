@@ -1,0 +1,149 @@
+@import '../layout';
+
+.recherche-fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba($bleu-fonce, 0.9);
+    color: $blanc;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px $bleu-fonce;
+    color: $blanc;
+    cursor: pointer;
+    z-index: 90;
+    transition: 0.2s;
+
+    &:hover {
+        transform: scale(1.08);
+    }
+}
+
+.recherche-fond {
+    position: fixed;
+    inset: 0;
+    background: rgba($noir, 0.45);
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+}
+
+.recherche-modale {
+    width: 100%;
+    max-width: 560px;
+    background: $blanc;
+    border-radius: $rayon-carte;
+    box-shadow: 0 20px 60px rgba($noir, 0.2);
+    overflow: hidden;
+    animation: drawerEntree 0.2s ease;
+}
+
+.recherche-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid $bordure;
+}
+
+.recherche-icone {
+    color: $bleu-fonce;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.recherche-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: $font-moyenne;
+    color: $bleu-fonce;
+    background: transparent;
+
+    &::placeholder {
+        color: rgba($bleu-fonce, 0.35);
+    }
+}
+
+.recherche-kbd {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: $fond-page;
+    border: 1px solid $bordure;
+    color: $gris;
+    font-family: $font-moyenne;
+}
+
+.recherche-resultats {
+    max-height: 360px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.recherche-vide {
+    padding: 24px;
+    text-align: center;
+    color: $gris;
+    font-size: 0.9rem;
+}
+
+.recherche-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background $transition;
+
+    &:hover {
+        background: $fond-page;
+    }
+}
+
+.recherche-item-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    font-family: $font-moyenne;
+}
+
+.recherche-item-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $bleu-fonce;
+    flex: 1;
+}
+
+.recherche-item-sous {
+    font-size: 0.78rem;
+    color: $gris;
+}
+
+.recherche-hint {
+    padding: 14px 18px;
+    font-size: 0.78rem;
+    color: $gris;
+
+    kbd {
+        font-size: 0.7rem;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: $fond-page;
+        border: 1px solid $bordure;
+    }
+}

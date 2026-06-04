@@ -171,7 +171,6 @@ const totalFacture = computed(() =>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

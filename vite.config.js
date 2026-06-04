@@ -3,21 +3,17 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  base: '/mes_projet/outil-pilotage-innov/',
   plugins: [vue()],
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
+    }
   },
+
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vue-core':  ['vue', 'vue-router'],
-          'chartjs':   ['chart.js'],
-        }
-      }
-    },
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 600
   }
 })
+
