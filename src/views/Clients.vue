@@ -121,7 +121,7 @@ function fermerModale() { modale.value = false; edition.value = null }
                 <span class="topbar__titre">Clients</span>
                 <div class="topbar__actions">
                     <button v-if="nbAlertes" class="topbar__cloche" @click="voirAlertes = true">
-                        🔔 <span class="topbar__cloche-badge">{{ nbAlertes }}</span>
+                        <img src="/images/cloche.svg" alt="notification" style="width: 20px; height: 20px;"> <span class="topbar__cloche-badge">{{ nbAlertes }}</span>
                     </button>
                 </div>
             </div>

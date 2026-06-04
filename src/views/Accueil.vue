@@ -184,73 +184,73 @@ async function syncOutlook() {
 }
 
 function exportPDF() {
-    const doc = new jsPDF()
-    const mois = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
-    const moisTitre = mois.charAt(0).toUpperCase() + mois.slice(1)
-    const moisKey = `${anneeIdx}-${String(moisIdx + 1).padStart(2, '0')}`
+    // const doc = new jsPDF()
+    // const mois = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    // const moisTitre = mois.charAt(0).toUpperCase() + mois.slice(1)
+    // const moisKey = `${anneeIdx}-${String(moisIdx + 1).padStart(2, '0')}`
 
-    const facturations = store.facturations
-    const caFacture    = facturations.filter(f => f.mois === moisKey).reduce((s, f) => s + (Number(f.facture) || 0), 0)
-    const caTheorique  = facturations.filter(f => f.mois === moisKey).reduce((s, f) => s + (Number(f.theorique) || 0), 0)
-    const joursPlanifies = missionsDuMoisListe.value.reduce((s, m) => s + (m.nb_jours || 0), 0)
+    // const facturations = store.facturations
+    // const caFacture = facturations.filter(f => f.mois === moisKey).reduce((s, f) => s + (Number(f.facture) || 0), 0)
+    // const caTheorique = facturations.filter(f => f.mois === moisKey).reduce((s, f) => s + (Number(f.theorique) || 0), 0)
+    // const joursPlanifies = missionsDuMoisListe.value.reduce((s, m) => s + (m.nb_jours || 0), 0)
 
-    doc.setFontSize(18)
-    doc.setTextColor(49, 86, 145)
-    doc.text("Innov'HSE — Bilan mensuel", 14, 18)
-    doc.setFontSize(11)
-    doc.setTextColor(100)
-    doc.text(moisTitre, 14, 26)
-    doc.setDrawColor(220)
-    doc.line(14, 30, 196, 30)
+    // doc.setFontSize(18)
+    // doc.setTextColor(49, 86, 145)
+    // doc.text("Innov'HSE — Bilan mensuel", 14, 18)
+    // doc.setFontSize(11)
+    // doc.setTextColor(100)
+    // doc.text(moisTitre, 14, 26)
+    // doc.setDrawColor(220)
+    // doc.line(14, 30, 196, 30)
 
-    const kpis = [
-        ['Missions ce mois',       String(missionsDuMois.value)],
-        ['Jours planifiés',        `${joursPlanifies}j`],
-        ['Jours réalisés (total)', `${totalJours.value}j / ${totalCapacite.value}j dispo`],
-        ['Taux de charge moyen',   `${tauxMoyen.value}%`],
-        ['Alertes actives',        String(alertes.value.length)],
-    ]
-    if (estAdmin.value) {
-        kpis.push(['CA facturé ce mois',   `${caFacture.toLocaleString('fr-FR')} €`])
-        kpis.push(['CA théorique ce mois', `${caTheorique.toLocaleString('fr-FR')} €`])
-    }
+    // const kpis = [
+    //     ['Missions ce mois', String(missionsDuMois.value)],
+    //     ['Jours planifiés', `${joursPlanifies}j`],
+    //     ['Jours réalisés (total)', `${totalJours.value}j / ${totalCapacite.value}j dispo`],
+    //     ['Taux de charge moyen', `${tauxMoyen.value}%`],
+    //     ['Alertes actives', String(alertes.value.length)],
+    // ]
+    // if (estAdmin.value) {
+    //     kpis.push(['CA facturé ce mois', `${caFacture.toLocaleString('fr-FR')} €`])
+    //     kpis.push(['CA théorique ce mois', `${caTheorique.toLocaleString('fr-FR')} €`])
+    // }
 
-    autoTable(doc, {
-        startY: 36,
-        head: [['Indicateur', 'Valeur']],
-        body: kpis,
-        theme: 'striped',
-        headStyles: { fillColor: [49, 86, 145] },
-        margin: { left: 14, right: 14 },
-    })
+    // autoTable(doc, {
+    //     startY: 36,
+    //     head: [['Indicateur', 'Valeur']],
+    //     body: kpis,
+    //     theme: 'striped',
+    //     headStyles: { fillColor: [49, 86, 145] },
+    //     margin: { left: 14, right: 14 },
+    // })
 
-    const y2 = doc.lastAutoTable.finalY + 12
-    doc.setFontSize(12)
-    doc.setFont(undefined, 'bold')
-    doc.setTextColor(30)
-    doc.text('Missions du mois', 14, y2)
-    doc.setFont(undefined, 'normal')
+    // const y2 = doc.lastAutoTable.finalY + 12
+    // doc.setFontSize(12)
+    // doc.setFont(undefined, 'bold')
+    // doc.setTextColor(30)
+    // doc.text('Missions du mois', 14, y2)
+    // doc.setFont(undefined, 'normal')
 
-    const lignes = missionsDuMoisListe.value.map(m => [
-        m.titre,
-        nomEmploye(m.employe_id),
-        clients.value.find(c => c.id === m.client_id)?.nom || '—',
-        `${m.nb_jours || 0}j`,
-        labelStatut(m.statut),
-        formaterDate(m.date_debut),
-    ])
+    // const lignes = missionsDuMoisListe.value.map(m => [
+    //     m.titre,
+    //     nomEmploye(m.employe_id),
+    //     clients.value.find(c => c.id === m.client_id)?.nom || '—',
+    //     `${m.nb_jours || 0}j`,
+    //     labelStatut(m.statut),
+    //     formaterDate(m.date_debut),
+    // ])
 
-    autoTable(doc, {
-        startY: y2 + 4,
-        head: [['Mission', 'Consultant', 'Client', 'Jours', 'Statut', 'Date']],
-        body: lignes.length ? lignes : [['Aucune mission ce mois', '', '', '', '', '']],
-        theme: 'striped',
-        headStyles: { fillColor: [49, 86, 145] },
-        margin: { left: 14, right: 14 },
-        styles: { fontSize: 8 },
-    })
+    // autoTable(doc, {
+    //     startY: y2 + 4,
+    //     head: [['Mission', 'Consultant', 'Client', 'Jours', 'Statut', 'Date']],
+    //     body: lignes.length ? lignes : [['Aucune mission ce mois', '', '', '', '', '']],
+    //     theme: 'striped',
+    //     headStyles: { fillColor: [49, 86, 145] },
+    //     margin: { left: 14, right: 14 },
+    //     styles: { fontSize: 8 },
+    // })
 
-    doc.save(`bilan-${new Date().toISOString().slice(0, 7)}.pdf`)
+    // doc.save(`bilan-${new Date().toISOString().slice(0, 7)}.pdf`)
 }
 </script>
 
@@ -265,16 +265,16 @@ function exportPDF() {
                 <div class="topbar__actions">
                     <button class="btn btn--fantome btn--petit" @click="syncOutlook">⟳ Sync Outlook</button>
                     <span v-if="dernierSync" class="dashboard__sync">Mis à jour {{ dernierSync }}</span>
-                    <!-- <button class="btn btn--fantome btn--petit" @click="exportPDF">↓ PDF</button> -->
+                    <button class="btn btn--fantome btn--petit" @click="exportPDF">↓ PDF</button>
                     <button v-if="nbAlertes" class="topbar__cloche" @click="voirAlertes = true">
-                        🔔 <span class="topbar__cloche-badge">{{ nbAlertes }}</span>
+                        <img src="/images/cloche.svg" alt="notification" style="width: 20px; height: 20px;"> <span class="topbar__cloche-badge">{{ nbAlertes }}</span>
                     </button>
                 </div>
             </div>
 
             <div class="page">
 
-                <!-- KPIs -->
+                <!-- kpis -->
                 <div class="kpi-grille">
                     <div class="kpi">
                         <div class="kpi__label">Missions ce mois</div>
@@ -300,7 +300,7 @@ function exportPDF() {
                     </div>
                 </div>
 
-                <!-- Graphiques -->
+                <!-- graphiques -->
                 <div class="dashboard__grille">
 
                     <IndicateursMois />

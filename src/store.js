@@ -1,21 +1,36 @@
 import { reactive } from 'vue'
 
-const store = reactive({
-    clients:      JSON.parse(localStorage.getItem('ihse_clients')      || '[]'),
-    missions:     JSON.parse(localStorage.getItem('ihse_missions')     || '[]'),
-    employes:     JSON.parse(localStorage.getItem('ihse_employes')     || '[]'),
-    prospects:    JSON.parse(localStorage.getItem('ihse_prospects')    || '[]'),
-    facturations: JSON.parse(localStorage.getItem('ihse_facturations') || '[]'),
-    charges:      JSON.parse(localStorage.getItem('ihse_charges')      || 'null'),
-    user:         JSON.parse(localStorage.getItem('ihse_user')         || 'null'),
+import clientsData from './data/clients.json'
+import employesData from './data/employes.json'
+import missionsData from './data/missions.json'
 
-    setClients(data)      { this.clients      = data; localStorage.setItem('ihse_clients',      JSON.stringify(data)) },
-    setMissions(data)     { this.missions     = data; localStorage.setItem('ihse_missions',     JSON.stringify(data)) },
-    setEmployes(data)     { this.employes     = data; localStorage.setItem('ihse_employes',     JSON.stringify(data)) },
-    setProspects(data)    { this.prospects    = data; localStorage.setItem('ihse_prospects',    JSON.stringify(data)) },
-    setFacturations(data) { this.facturations = data; localStorage.setItem('ihse_facturations', JSON.stringify(data)) },
-    setCharges(data)      { this.charges      = data; localStorage.setItem('ihse_charges',      JSON.stringify(data)) },
-    setUser(data)         { this.user         = data; if (data) localStorage.setItem('ihse_user', JSON.stringify(data)); else localStorage.removeItem('ihse_user') },
+const store = reactive({
+    clients: clientsData,
+    employes: employesData,
+    missions: missionsData,
+
+    prospects: [],
+    facturations: [],
+    charges: {},
+
+    user: JSON.parse(localStorage.getItem('ihse_user') || 'null'),
+    clientsExtra: JSON.parse(localStorage.getItem('ihse_clients_extra') || '{}'),
+
+    setUser(data) {
+        this.user = data
+        if (data) localStorage.setItem('ihse_user', JSON.stringify(data))
+        else localStorage.removeItem('ihse_user')
+    },
+
+    setClientExtra(clientId, champ, valeur) {
+        const id = String(clientId)
+        this.clientsExtra[id] = { ...this.clientsExtra[id], [champ]: valeur }
+        localStorage.setItem('ihse_clients_extra', JSON.stringify(this.clientsExtra))
+    },
+
+    getClientExtra(clientId, champ, defaut = '') {
+        return this.clientsExtra[String(clientId)]?.[champ] ?? defaut
+    }
 })
 
 export default store

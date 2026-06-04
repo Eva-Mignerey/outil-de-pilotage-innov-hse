@@ -1,3 +1,8 @@
+<script setup>
+import RechercheGlobale from '@/components/RechercheGlobale.vue'
+</script>
+
 <template>
-  <router-view />
+    <RechercheGlobale />
+    <router-view />
 </template>

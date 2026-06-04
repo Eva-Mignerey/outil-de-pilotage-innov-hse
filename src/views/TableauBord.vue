@@ -16,7 +16,7 @@ const categories = [
     id: 'frais',
     label: 'Frais',
     couleur: '#459AE9',
-    picto: '/src/assets/images/frais.svg',
+    picto: 'images/frais.svg',
     indicateurs: [
         { cle: 'carburant', label: 'Carburant', unite: '€', source: 'DKV + Tickets' },
         { cle: 'peage', label: 'Péage', unite: '€', source: 'DKV + Tickets' },
@@ -29,7 +29,7 @@ const categories = [
     id: 'rh',
     label: 'RH',
     couleur: '#84EE57',
-    picto: '/src/assets/images/rh.svg',
+    picto: 'images/rh.svg',
     indicateurs: [
         { cle: 'taux_absence', label: "Taux d'absence", unite: '%', source: 'Planning congés' },
         { cle: 'conges', label: 'Congés restants', unite: 'j', source: 'Compta' },
@@ -42,7 +42,7 @@ const categories = [
     id: 'finances',
     label: 'Finances',
     couleur: '#EDC95C',
-    picto: '/src/assets/images/finances.svg',
+    picto: 'images/finances.svg',
     indicateurs: [
         { cle: 'nb_factures', label: 'Nb factures', source: 'EBP' },
         { cle: 'ca', label: "Chiffre d'affaires", unite: '€', source: 'EBP' },
@@ -55,7 +55,7 @@ const categories = [
     id: 'clients',
     label: 'Clients',
     couleur: '#E84B4B',
-    picto: '/src/assets/images/clients.svg',
+    picto: 'images/clients.svg',
     indicateurs: [
         { cle: 'delai_interv', label: "Délai d'intervention", unite: 'j', source: 'Équipes' },
         { cle: 'satisfaction', label: 'Satisfaction', unite: '/5', source: 'Équipes' },
@@ -67,7 +67,7 @@ const categories = [
     id: 'commerce',
     label: 'Commerce',
     couleur: '#7B2D8B',
-    picto: '/src/assets/images/commerce.svg',
+    picto: 'images/commerce.svg',
     indicateurs: [
         { cle: 'devis', label: 'Devis envoyés', source: 'EBP' },
         { cle: 'commandes', label: 'Commandes reçues', source: 'EBP' },
@@ -80,7 +80,7 @@ const categories = [
     id: 'communication',
     label: 'Communication',
     couleur: '#1A6B8A',
-    picto: '/src/assets/images/communication.svg',
+    picto: 'images/communication.svg',
     indicateurs: [
         { cle: 'nb_abonnes', label: 'Nombre d\'abonnés' },
         { cle: 'impressions', label: 'Impressions' },

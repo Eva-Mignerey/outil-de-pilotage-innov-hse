@@ -45,7 +45,7 @@ function sInscrire() {
     <div class="auth-bg">
         <div class="auth-carte auth-carte--inscription">
 
-        <img class="auth-logo" src="/logo.svg" alt="Innov'HSE" />
+        <img class="auth-logo" src="/images/logo.svg" alt="Innov'HSE" />
 
         <h1 class="auth-titre">Inscription</h1>
 

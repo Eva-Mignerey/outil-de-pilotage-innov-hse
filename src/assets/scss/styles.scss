@@ -4,19 +4,21 @@
 // pages
 @use "pages/connexion";
 @use "pages/inscription";
-@use "pages/dashboard";
+@use "pages/accueil";
 @use "pages/clients";
 @use "pages/missions";
 @use "pages/planning";
 @use "pages/facturation";
-@use "pages/employes";
+@use "pages/equipe";
 @use "pages/prospects";
-@use "pages/tableaucharges";
+@use "pages/tableaubord";
 @use "pages/alertes";
+@use "pages/ficheclient";
 
 // composants
 @use "composants/sidebar";
 @use "composants/modales";
+@use "composants/recherche";
 
 
 * {
