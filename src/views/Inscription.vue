@@ -37,7 +37,7 @@ function sInscrire() {
 
     comptes.push({ nom: nom.value, email: email.value, profil: profil.value, password: password.value })
     localStorage.setItem('ihse_comptes', JSON.stringify(comptes))
-    router.push('/connexion')
+    router.push('/tableau-bord')
 }
 </script>
 

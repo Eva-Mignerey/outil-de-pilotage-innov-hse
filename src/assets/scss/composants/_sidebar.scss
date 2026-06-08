@@ -1,6 +1,6 @@
 @import '../_layout';
 
-.layout__sidebar {
+.layout_sidebar {
     width: $sidebar-largeur;
     background: $bleu-fonce;
     position: fixed;
@@ -14,7 +14,7 @@
 }
 
 // logo
-.sidebar__logo {
+.sidebar_logo {
     background: $blanc;
     padding: 14px 16px;
     display: flex;
@@ -22,13 +22,13 @@
     justify-content: center;
 }
 
-.sidebar__logo-img {
+.sidebar_logo-img {
     width: 100%;
     max-width: 190px;
 }
 
 // nav
-.sidebar__nav {
+.sidebar_nav {
     flex: 1;
     padding: 16px 12px;
     display: flex;
@@ -36,7 +36,7 @@
     gap: 6px;
 }
 
-.sidebar__btn {
+.sidebar_btn {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -59,13 +59,13 @@
     }
 }
 
-.sidebar__icone {
+.sidebar_icone {
     width: 20px;
     text-align: center;
 }
 
 // user
-.sidebar__user {
+.sidebar_user {
     padding: 14px 16px;
     border-top: 1px solid rgba($blanc, 0.15);
     display: flex;
@@ -74,7 +74,7 @@
     gap: 8px;
 }
 
-.sidebar__user-info {
+.sidebar_user-info {
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -94,7 +94,7 @@
     color: rgba($blanc, 0.55);
 }
 
-.sidebar__deconnexion {
+.sidebar_deconnexion {
     flex-shrink: 0;
     width: 30px;
     height: 30px;
@@ -114,6 +114,12 @@
         color: $blanc;
         border-color: rgba($rouge-danger, 0.5);
     }
+}
+
+.sidebar_deconnexion img {
+    width: 13px;
+    height: auto;
+    display: flex;
 }
 
 // menu burger
@@ -172,11 +178,11 @@
 // responsive
 @media (max-width: $mobile) {
 
-    .layout__sidebar {
+    .layout_sidebar {
         transform: translateX(-100%);
     }
 
-    .layout__sidebar.sidebar--ouvert {
+    .layout_sidebar.sidebar--ouvert {
         transform: translateX(0);
     }
 

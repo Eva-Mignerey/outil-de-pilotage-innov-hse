@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
-import store from '@/store.js'
-import { estAdmin } from '@/permissions.js'
+import store from '../../store.js'
+import { estAdmin } from '../permissions.js'
 
 const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import store from '@/store.js'
+import store from '../../store.js'
 
 const router = useRouter()
 const ouverte = ref(false)
@@ -75,7 +75,7 @@ const couleurs = { Client: '#1B4F8A', Mission: '#1A7A4A', Prospect: '#E8A020' }
 
 <template>
     <div v-if="user">
-        <button class="recherche-fab" @click="ouvrir" title="Recherche globale (Ctrl+K)">🔍︎</button>
+        <button class="recherche-fab" @click="ouvrir" title="Recherche globale (Ctrl+K)"><img src="/images/loupe.svg" alt="Recherche"/></button>
 
         <div v-if="ouverte" class="recherche-fond" @click.self="fermer">
             <div class="recherche-modale">

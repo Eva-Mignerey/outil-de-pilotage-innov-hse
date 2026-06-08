@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
-import store from '@/store.js'
-import { estAdmin } from '@/permissions.js'
+import store from '../../store.js'
+import { estAdmin } from '../permissions.js'
 
 const now = new Date()
 const moisIdx = now.getMonth()

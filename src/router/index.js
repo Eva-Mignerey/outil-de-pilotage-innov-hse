@@ -18,9 +18,9 @@ const router = createRouter({
             component: () => import('../views/Inscription.vue') 
         },
         { 
-            path: '/accueil', 
-            name: 'accueil', 
-            component: () => import('../views/Accueil.vue') 
+            path: '/tableau-bord', 
+            name: 'tableau-bord', 
+            component: () => import('../views/TableauBord.vue') 
         },
         { 
             path: '/planning', 
@@ -58,9 +58,9 @@ const router = createRouter({
             component: () => import('../views/Facturation.vue') 
         },
         { 
-            path: '/tableau-bord', 
-            name: 'tableau-bord', 
-            component: () => import('../views/TableauBord.vue') 
+            path: '/indicateurs', 
+            name: 'indicateurs', 
+            component: () => import('../views/Indicateurs.vue') 
         },
     ]
 })

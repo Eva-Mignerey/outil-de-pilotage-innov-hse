@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
 import { alertesActives } from '../services/alertes.js'
-import store from '@/store.js'
+import store from '../../store.js'
 
 const employes = computed(() => store.employes)
 const clients = computed(() => store.clients)
@@ -177,7 +177,7 @@ function couleurEcart(ecart) {
                     </div>
                     <div class="carte__corps">
 
-                        <!-- Desktop : tableau -->
+                        <!-- pc -->
                         <div class="planning__scroll-wrap">
                             <table class="planning__tableau">
                                 <thead>
@@ -224,7 +224,7 @@ function couleurEcart(ecart) {
                             </table>
                         </div>
 
-                        <!-- Mobile : liste -->
+                        <!-- mobile -->
                         <div class="planning__liste-mobile">
                             <div v-for="emp in employesFiltres" :key="emp.id" class="planning__liste-consultant">
                                 <div class="planning__liste-nom">
@@ -254,7 +254,6 @@ function couleurEcart(ecart) {
                     </div>
                 </div>
 
-                <!-- données réelles -->
                 <div class="carte">
                     <div class="carte__entete">
                         <h2>Données réelles</h2>
@@ -276,10 +275,9 @@ function couleurEcart(ecart) {
 
                     <div class="carte__corps" style="padding:0">
 
-                        <!-- VUE PAR MOIS (défaut) -->
-                        <div v-if="!vueGlobale">
 
-                            <!-- Desktop : tableau -->
+                        <div v-if="!vueGlobale">
+                            <!-- pc -->
                             <div class="planning__donnees-tableau">
                                 <div class="tableau-wrap">
                                     <table class="tableau">
@@ -327,7 +325,7 @@ function couleurEcart(ecart) {
                                 </div>
                             </div>
 
-                            <!-- Mobile : cartes -->
+                            <!-- mobile -->
                             <div class="planning__donnees-cartes">
                                 <div v-for="emp in employesFiltres" :key="emp.id" class="planning__donnee-carte">
                                     <div class="planning__donnee-nom">{{ emp.nom.split(' ')[0] }}</div>
@@ -357,7 +355,7 @@ function couleurEcart(ecart) {
                             </div>
                         </div>
 
-                        <!-- VUE TRIMESTRIELLE -->
+                        <!-- trimestre -->
                         <div v-else>
                             <div class="planning__donnees-tableau">
                                 <div class="tableau-wrap">
@@ -426,7 +424,6 @@ function couleurEcart(ecart) {
                                 </div>
                             </div>
 
-                            <!-- Mobile trimestrielle : cartes par mois -->
                             <div class="planning__donnees-cartes">
                                 <div v-for="t in trimestre" :key="t.mois" style="padding:14px 16px;border-bottom:1px solid #E8EAF0">
                                     <div style="font-family:'Archivo Black',sans-serif;font-size:.9rem;color:#315691;margin-bottom:10px;text-transform:capitalize">
@@ -456,7 +453,7 @@ function couleurEcart(ecart) {
                     </div>
                 </div>
 
-                <!-- Légende -->
+                <!-- légende -->
                 <div class="planning__legende">
                     <div v-for="(c, i) in clients" :key="c.id" class="planning__legende-item">
                         <div class="planning__legende-point" :style="{ background: couleurs[i % couleurs.length] }"></div>
@@ -467,7 +464,6 @@ function couleurEcart(ecart) {
             </div>
         </div>
 
-        <!-- Modale détail tâche -->
         <div v-if="detail" class="modale-fond" @click.self="detail = null">
             <div class="modale">
                 <div class="modale__entete">
@@ -483,7 +479,6 @@ function couleurEcart(ecart) {
             </div>
         </div>
 
-        <!-- Modale liste alertes -->
         <div v-if="voirAlertes" class="popup-liste-fond" @click.self="voirAlertes = false">
             <div class="popup-liste">
                 <div class="popup-liste__entete">
