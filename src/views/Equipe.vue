@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
-import store from '@/store.js'
+import store from '../../store.js'
 
 const employes = ref([...store.employes])
 const missions = computed(() => store.missions)

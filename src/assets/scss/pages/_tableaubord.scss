@@ -1,296 +1,99 @@
 @import '../layout';
 
-.charges__ligne {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
+.dashboard__carte-mois {
+    grid-column: span 2;
 }
 
-.charges__cat-label {
+.dashboard__mois-grille {
+    display: flex;
+    gap: 24px;
+}
+
+.dashboard__mois-bloc {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-
-.charges__cat-picto {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-    flex-shrink: 0;
-}
-
-.charges__cat-nom {
-    font-family: $font-moyenne;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-}
-
-.charges__cartes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    flex: 1;
-}
-
-.charges__carte {
-    width: 130px;
-    min-height: 90px;
-
-    background: $blanc;
-    border: 1.5px solid $bordure;
-    border-radius: 14px;
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    transition: box-shadow $transition, transform $transition;
-
-    &:hover {
-        box-shadow: 0 4px 16px rgba(0,0,0,.10);
-        transform: translateY(-1px);
-    }
-
-    &::before {
-        content: '';
-        display: block;
-        height: 3px;
-        background: var(--cat-couleur, #315691);
-        border-radius: 14px 14px 0 0;
-    }
-
-    &--graphique {
-        cursor: pointer;
-        border-style: dashed;
-        opacity: 0.75;
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-}
-
-.charges__btn-evolution {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 16px;
-    border-radius: 10px;
-    background: transparent;
-    border: 1.5px solid var(--cat-couleur, #315691);
-    color: var(--cat-couleur, #315691);
-    font-family: $font-moyenne;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background $transition, color $transition;
-    align-self: center;
-
-    &:hover {
-        background: var(--cat-couleur, #315691);
-        color: $blanc;
-    }
-}
-
-.charges__btn-evolution-icone {
-    font-size: 1rem;
-}
-
-.charges__carte-haut {
-    padding: 8px 10px 4px;
-    flex: 1;
-}
-
-.charges__carte-titre {
-    font-family: $font-moyenne;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: $noir;
-    line-height: 1.3;
-}
-
-.charges__carte-source {
-    font-family: $font-moyenne;
-    font-size: 0.65rem;
-    color: $gris;
-    margin-top: 3px;
-}
-
-.charges__carte-bas {
-    padding: 6px 10px 10px;
-
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    border-top: 1px solid $remplissage;
+    text-align: center;
+    padding: 16px;
+    border-radius: $rayon;
     background: $fond-page;
 }
 
-.charges__input {
-    width: 100%;
-    background: transparent;
-    border: none;
-
+.dashboard__mois-label {
     font-family: $font-titre;
-    font-size: 1.1rem;
+    font-size: 0.75rem;
     color: $bleu-fonce;
-
-    outline: none;
-    min-width: 0;
-
-    &::placeholder {
-        color: rgba($gris, .5);
-        font-family: $font-moyenne;
-        font-size: .85rem;
-    }
-
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-        appearance: none;
-    }
+    text-transform: uppercase;
 }
 
-.charges__unite {
-    font-family: $font-moyenne;
+.dashboard__mois-valeur {
+    font-family: $font-titre;
+    font-size: 1.6rem;
+    color: $bleu-fonce;
+}
+
+.dashboard__mois-sous {
     font-size: 0.72rem;
-    color: $gris;
-    flex-shrink: 0;
+    color: $bleu-fonce;
 }
 
-/* pc */
-
-@media (min-width: $mobile) {
-
-    .charges__ligne {
-        flex-direction: column;
-    }
-
-    .charges__cat-label {
-        width: 100%;
-        min-width: 100%;
-
-        flex-direction: row;
-        justify-content: flex-start;
-
-        padding: 10px 14px;
-        gap: 10px;
-    }
-
-    .charges__cartes {
-        width: 100%;
-    }
+.dashboard__grille {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
 }
-
-/* mobile */
 
 @media (max-width: $mobile) {
 
-    .charges__ligne {
+    .dashboard__grille {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .dashboard__carte-mois {
+        grid-column: span 1;
+    }
+
+    .dashboard__mois-grille {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .dashboard__mois-bloc {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .dashboard__mois-icone {
+        font-size: 1.4rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .dashboard__mois-valeur {
+        font-size: 1.3rem;
+    }
+
+    .dashboard__mois-sous {
+        font-size: 0.68rem;
+        margin-top: 2px;
+    }
+
+    .dashboard__pills {
+        flex-wrap: wrap;
+    }
+
+    .dashboard__donut {
         flex-direction: column;
     }
 
-    .charges__cat-label {
-        flex-direction: row;
+    .dashboard__donut-canvas {
         width: 100%;
-        min-width: unset;
-        padding: 8px 14px;
-        justify-content: flex-start;
-        gap: 8px;
+        max-width: 200px;
+        margin: 0 auto;
     }
-
-    .charges__carte {
-        width: calc(50% - 5px);
-    }
-}
-
-.mois-select__input {
-    padding: 6px 12px;
-    background: rgba(128, 146, 164, 0.15);
-    border: 1.5px solid transparent;
-    border-radius: 12px;
-
-    font-family: "Poppins", sans-serif;
-    font-size: 0.83rem;
-    color: $noir;
-
-    cursor: pointer;
-    outline: none;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-.mois-select {
-    position: relative;
-    display: inline-block;
-}
-
-.mois-select__input {
-    padding: 6px 28px 6px 12px;
-    background: rgba(128, 146, 164, 0.15);
-    border: 1.5px solid transparent;
-    border-radius: 12px;
-
-    font-family: "Poppins", sans-serif;
-    font-size: 0.83rem;
-    color: $noir;
-
-    cursor: pointer;
-    outline: none;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-.mois-select__arrow {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-
-    width: 0;
-    height: 0;
-
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 6px solid (rgba(0, 0, 0, 0.6));
-}
-
-.mois-select__input:focus {
-    border-color: $bordure;
-}
-
-.charges__objectif {
-    display: flex;
-    align-items: center;
-    padding: 4px 6px;
-    gap: 6px;
-    margin-top: 6px;
-    font-size: 0.72rem;
-    color: #1A6B8A;
-}
-
-.charges__objectif-badge {
-    font-weight: 600;
-    font-size: 0.78rem;
-    padding: 1px 5px;
-    border-radius: 4px;
-}
-
-.charges__objectif-badge--ok {
-    background: rgba($vert, 0.2);
-    color: $vert;
-}
-
-.charges__objectif-badge--ko {
-    background: rgba($rouge-danger, 0.2);
-    color: $rouge-danger;
 }

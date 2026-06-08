@@ -2,7 +2,9 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
-import store from '@/store.js'
+import store from '../../store.js'
+import { jsPDF } from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const employes = computed(() => store.employes)
 const clients = computed(() => store.clients)
@@ -30,14 +32,18 @@ const missionsFiltrees = computed(() =>
     missions.value.filter(m => {
         if (filtreEmploye.value && m.employe_id !== Number(filtreEmploye.value)) return false
         if (filtreStatut.value && m.statut !== filtreStatut.value) return false
-        return !(filtreClient.value && m.client_id !== Number(filtreClient.value));
-
+        return !(filtreClient.value && m.client_id !== Number(filtreClient.value))
     }).sort((a, b) => new Date(b.date_debut) - new Date(a.date_debut))
 )
 
 function nomEmploye(id) { return employes.value.find(e => e.id === id)?.nom || '—' }
 function nomClient(id) { return clients.value.find(c => c.id === id)?.nom || '—' }
-function formaterDate(d){ return d ? new Date(d).toLocaleDateString('fr-FR') : '—' }
+function formaterDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR') : '—' }
+function formaterDatePDF(d) {
+    if (!d) return '—'
+    const [y, m, j] = d.split('-')
+    return `${j}/${m}/${y}`
+}
 function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
 function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
 
@@ -73,21 +79,66 @@ function ouvrirAjout() {
 
 function ouvrirEdition(m) { form.value = { heures_supp_client: '', ...m }; edition.value = m; modale.value = true }
 function fermerModale() { modale.value = false; edition.value = null }
+
+function exportPDF() {
+    const doc = new jsPDF()
+
+    const titre = "Innov'HSE — Missions / Tâches"
+    const date = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+
+    let sous = []
+    if (filtreEmploye.value) sous.push(nomEmploye(Number(filtreEmploye.value)))
+    if (filtreClient.value) sous.push(nomClient(Number(filtreClient.value)))
+    if (filtreStatut.value) sous.push(labelStatut(filtreStatut.value))
+    const sousTitre = sous.length ? sous.join(' · ') : 'Toutes les missions'
+
+    doc.setFontSize(18)
+    doc.setTextColor(49, 86, 145)
+    doc.text(titre, 14, 18)
+    doc.setFontSize(11)
+    doc.setTextColor(100)
+    doc.text(`${sousTitre} — ${date}`, 14, 26)
+    doc.setDrawColor(220)
+    doc.line(14, 30, 196, 30)
+
+    const lignes = missionsFiltrees.value.map(m => [
+        m.titre,
+        nomEmploye(m.employe_id),
+        nomClient(m.client_id),
+        `${formaterDatePDF(m.date_debut)} - ${formaterDatePDF(m.date_fin)}`,
+        `${m.nb_jours || 0}j`,
+        m.heures_supp_client || '—',
+        labelStatut(m.statut)
+    ])
+
+    autoTable(doc, {
+        startY: 36,
+        head: [['Tâche', 'Consultant', 'Client', 'Dates', 'Jours', 'Heures supp.', 'Statut']],
+        body: lignes.length ? lignes : [['Aucune mission trouvée', '', '', '', '', '', '']],
+        theme: 'striped',
+        headStyles: { fillColor: [49, 86, 145] },
+        margin: { left: 14, right: 14 },
+        styles: { fontSize: 8 },
+        columnStyles: {
+            0: { cellWidth: 40 },
+            3: { cellWidth: 42 },
+        }
+    })
+
+    doc.save(`missions-${new Date().toISOString().slice(0, 10)}.pdf`)
+}
 </script>
 
 <template>
     <div class="layout">
         <Sidebar :user="user" />
-        <ToastAlertes
-            :clients="clients"
-            :missions="missions"
-            :single="true"
-        />
+        <ToastAlertes :clients="clients" :missions="missions" :single="true" />
 
         <div class="layout__main">
             <div class="topbar">
                 <span class="topbar__titre">Missions / Tâches</span>
                 <div class="topbar__actions">
+                    <button class="btn btn--fantome btn--petit" @click="exportPDF">↓ PDF</button>
                     <button class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Ajouter</button>
                 </div>
             </div>
@@ -174,7 +225,7 @@ function fermerModale() { modale.value = false; edition.value = null }
                 <div class="modale__corps">
                     <div class="champ">
                         <label>Titre *</label>
-                        <input v-model="form.titre" placeholder="Ex : WITZENMANN - Audit sécurité" />
+                        <input v-model="form.titre" />
                     </div>
                     <div class="missions__form-grille">
                         <div class="champ">
@@ -209,13 +260,9 @@ function fermerModale() { modale.value = false; edition.value = null }
                             </select>
                         </div>
                     </div>
-                    <!-- Heures fractionnées — saisie libre -->
                     <div class="champ">
                         <label>Heures pour un autre client (optionnel)</label>
-                        <input
-                            v-model="form.heures_supp_client"
-                            placeholder="Ex : 1h pour CARBONEX, 30min pour DEBO"
-                        />
+                        <input v-model="form.heures_supp_client" />
                         <small style="color:#8092A4;font-size:.75rem;margin-top:3px;display:block">
                             Saisir librement les heures passées pour d'autres clients durant cette journée
                         </small>

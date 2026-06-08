@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import store from '@/store.js'
+import store from '../../store.js'
 
 const router = useRouter()
 
@@ -30,7 +30,7 @@ function seConnecter() {
     }
 
     store.setUser(compte)
-    router.push('/accueil')
+    router.push('/tableau-bord')
 }
 </script>
 

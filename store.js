@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
 
-import clientsData from './data/clients.json'
-import employesData from './data/employes.json'
-import missionsData from './data/missions.json'
+import clientsData from './src/data/clients.json'
+import employesData from './src/data/employes.json'
+import missionsData from './src/data/missions.json'
 
 const store = reactive({
     clients: clientsData,
