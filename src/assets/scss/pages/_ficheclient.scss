@@ -60,7 +60,7 @@
     align-items: center;
     gap: 5px;
     padding: 4px 10px;
-    background: rgba($bleu-clair, 0.12);
+    background: rgba($bleu-clair, 0.15);
     color: $bleu-fonce;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -85,6 +85,34 @@
     align-self: center;
 }
 
+
+.fiche__referent-ligne {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    select:first-child {
+        flex: 2;
+    }
+}
+
+.fiche__domaine-select {
+    flex: 1;
+    font-size: 0.78rem;
+    padding: 6px 8px;
+    background: inherit;
+    border: inherit;
+    color: inherit;
+    border-radius: $rayon;
+    transition: $transition;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+}
+
 .fiche__tag-input {
     display: flex;
     gap: 8px;
@@ -104,5 +132,20 @@
             border-color: $bleu-clair;
             background: $blanc;
         }
+    }
+}
+
+@media (max-width: $mobile) {
+    .fiche__grille {
+        grid-template-columns: 1fr;
+    }
+
+    .fiche__referent-ligne {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .fiche__domaine-select {
+        width: 100%;
     }
 }

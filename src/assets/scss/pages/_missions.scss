@@ -76,3 +76,80 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
+
+.missions__btn-commentaire--actif {
+    color: $bleu-clair;
+    border-color: $bleu-clair;
+}
+
+.missions__btn-commentaire {
+    position: relative;
+}
+
+.missions__commentaire-dot {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    background: $vert;
+}
+
+.missions__tr-commentaire td {
+    background: rgba($bleu-clair, 0.04);
+    padding: 8px 16px 12px;
+    border-top: none;
+}
+
+.missions__commentaire-liste {
+    margin: 0 0 6px 16px;
+    padding: 0;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    color: $noir;
+    list-style: disc;
+}
+
+.missions__commentaire-suppr {
+    margin-left: 6px;
+    font-size: 0.8rem;
+    color: $gris;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color $transition;
+
+    &:hover { color: #e84b4b; }
+}
+
+.missions__commentaire-edit-btn {
+    &:hover { color: $bleu-clair; }
+}
+
+.missions__commentaire-edit {
+    padding: 2px 6px;
+    border: 1.5px solid $bleu-clair;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    outline: none;
+    width: 300px;
+}
+
+.missions__commentaire-input {
+    width: 100%;
+    max-width: 600px;
+    padding: 6px 10px;
+    background: $blanc;
+    border: 1.5px solid $bordure;
+    border-radius: $rayon;
+    font-family: $font-moyenne;
+    font-size: 0.85rem;
+    color: $noir;
+    outline: none;
+    transition: border-color $transition;
+
+    &:focus { border-color: $bleu-clair; }
+}

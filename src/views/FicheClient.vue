@@ -45,7 +45,11 @@ const sauver = (champ, valeur) => store.setClientExtra(client.value.id, champ, v
 const mail = computed({ get: () => extra('mail'), set: (v) => sauver('mail', v) })
 const telephone = computed({ get: () => extra('telephone'), set: (v) => sauver('telephone', v) })
 const titulaire = computed({ get: () => extra('titulaire_id'), set: (v) => sauver('titulaire_id', v ? Number(v) : null) })
+const titulairedomaine = computed({ get: () => extra('titulaire_domaine'), set: (v) => sauver('titulaire_domaine', v) })
 const suppleant = computed({ get: () => extra('suppleant_id'), set: (v) => sauver('suppleant_id', v ? Number(v) : null) })
+const suppleantdomaine = computed({ get: () => extra('suppleant_domaine'), set: (v) => sauver('suppleant_domaine', v) })
+
+const domaines = ['Sécurité', 'Environnement', 'Qualité']
 const missionsTypes = computed(() => extra('missions_types', []))
 
 const tagInput = ref('')
@@ -131,17 +135,29 @@ const supprimerTag = (tag) => {
                         <div class="carte__corps">
                             <div class="champ">
                                 <label>Titulaire</label>
-                                <select :value="titulaire" @change="titulaire = $event.target.value">
-                                    <option value="">— Sélectionner —</option>
-                                    <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
-                                </select>
+                                <div class="fiche__referent-ligne">
+                                    <select :value="titulaire" @change="titulaire = $event.target.value">
+                                        <option value="">— Sélectionner —</option>
+                                        <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
+                                    </select>
+                                    <select class="fiche__domaine-select" :value="titulairedomaine" @change="titulairedomaine = $event.target.value" :disabled="!titulaire">
+                                        <option value="">Domaine</option>
+                                        <option v-for="d in domaines" :key="d" :value="d">{{ d }}</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="champ" style="margin-bottom:0">
                                 <label>Suppléant</label>
-                                <select :value="suppleant" @change="suppleant = $event.target.value">
-                                    <option value="">— Sélectionner —</option>
-                                    <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
-                                </select>
+                                <div class="fiche__referent-ligne">
+                                    <select :value="suppleant" @change="suppleant = $event.target.value">
+                                        <option value="">— Sélectionner —</option>
+                                        <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
+                                    </select>
+                                    <select class="fiche__domaine-select" :value="suppleantdomaine" @change="suppleantdomaine = $event.target.value" :disabled="!suppleant">
+                                        <option value="">Domaine</option>
+                                        <option v-for="d in domaines" :key="d" :value="d">{{ d }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -166,6 +182,7 @@ const supprimerTag = (tag) => {
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="carte">

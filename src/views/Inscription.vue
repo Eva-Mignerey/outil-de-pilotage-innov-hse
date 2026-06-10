@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase.js'
 
 const router = useRouter()
 
@@ -10,8 +13,9 @@ const profil = ref('')
 const password = ref('')
 const password2 = ref('')
 const messageErreur = ref('')
+const chargement = ref(false)
 
-function sInscrire() {
+async function sInscrire() {
     if (!nom.value || !email.value || !profil.value || !password.value || !password2.value) {
         messageErreur.value = 'Tous les champs sont obligatoires.'
         return
@@ -29,15 +33,26 @@ function sInscrire() {
         return
     }
 
-    const comptes = JSON.parse(localStorage.getItem('ihse_comptes') || '[]')
-    if (comptes.find(c => c.email === email.value)) {
-        messageErreur.value = 'Un compte avec cet email existe déjà.'
-        return
-    }
+    chargement.value = true
+    messageErreur.value = ''
 
-    comptes.push({ nom: nom.value, email: email.value, profil: profil.value, password: password.value })
-    localStorage.setItem('ihse_comptes', JSON.stringify(comptes))
-    router.push('/tableau-bord')
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email.value, password.value)
+        await setDoc(doc(db, 'users', cred.user.uid), {
+            nom: nom.value,
+            email: email.value,
+            role: profil.value
+        })
+        router.push('/connexion')
+    } catch (e) {
+        if (e.code === 'auth/email-already-in-use') {
+            messageErreur.value = 'Un compte avec cet email existe déjà.'
+        } else {
+            messageErreur.value = 'Une erreur est survenue, réessayez.'
+        }
+    } finally {
+        chargement.value = false
+    }
 }
 </script>
 
@@ -67,7 +82,9 @@ function sInscrire() {
 
             <p class="erreur">{{ messageErreur }}</p>
 
-            <button class="auth-btn auth-btn--inscription" type="submit">S'inscrire</button>
+            <button class="auth-btn auth-btn--inscription" type="submit" :disabled="chargement">
+                {{ chargement ? 'Inscription...' : "S'inscrire" }}
+            </button>
         </form>
 
         </div>

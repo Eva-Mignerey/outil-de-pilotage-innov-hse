@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /mes_projet/outil-pilotage-innov/
+
+RewriteRule ^index\.html$ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /mes_projet/outil-pilotage-innov/index.html [L]

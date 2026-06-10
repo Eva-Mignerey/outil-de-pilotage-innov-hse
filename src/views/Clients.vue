@@ -6,7 +6,7 @@ import { alertesActives, niveauAlerte, messageAlerte } from '../services/alertes
 import store from '../../store.js'
 import { estAdmin } from '../permissions.js'
 
-const clients = ref([...store.clients])
+const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
 const user = computed(() => store.user || {})
 
@@ -31,7 +31,6 @@ const totalRealise = computed(() =>
 
 const voirAlertes = ref(false)
 
-// Alertes actives : clients à risque ou dépassés
 const alertes = computed(() => alertesActives(clients.value, missions.value))
 const nbAlertes = computed(() => alertes.value.length)
 
@@ -53,7 +52,6 @@ function classeProgression(realise, contrat) {
     return 'progression__barre--ok'
 }
 
-// Classe du badge alerte dans le tableau
 function classeAlerte(clientId) {
     const r = joursRealises(clientId)
     const c = clients.value.find(x => x.id === clientId)
@@ -73,36 +71,29 @@ function texteAlerte(clientId) {
     return { surplus: 'Dépassé', depasse: 'Critique', attention: 'Attention', ok: '' }[n]
 }
 
-function sauvegarder() {
+async function sauvegarder() {
     if (!form.value.nom || !form.value.jours_contractualises) return
     if (edition.value) {
-        const i = clients.value.findIndex(c => c.id === edition.value.id)
-        clients.value[i] = { ...edition.value, ...form.value }
+        await store.setClients(store.clients.map(c =>
+            c.id === edition.value.id ? { ...c, ...form.value } : c
+        ))
     } else {
-        clients.value.push({ id: Date.now(), ...form.value })
+        await store.setClients([...store.clients, { id: Date.now(), ...form.value }])
     }
-    store.setClients(clients.value)
     fermerModale()
 }
 
-const confirmerSuppr = ref(null) // client à supprimer
+const confirmerSuppr = ref(null)
 
 function demanderSuppression(c) {
     confirmerSuppr.value = c
 }
 
-function supprimer() {
+async function supprimer() {
     if (!confirmerSuppr.value) return
     const id = confirmerSuppr.value.id
-
-    // Supprimer le client
-    clients.value = clients.value.filter(c => c.id !== id)
-    store.setClients(clients.value)
-
-    // Supprimer aussi le prospect lié s'il existe
-    const prospectsMAJ = store.prospects.filter(p => p.client_id !== id)
-    store.setProspects(prospectsMAJ)
-
+    await store.setClients(store.clients.filter(c => c.id !== id))
+    await store.setProspects(store.prospects.filter(p => p.client_id !== id))
     confirmerSuppr.value = null
 }
 
@@ -128,7 +119,6 @@ function fermerModale() { modale.value = false; edition.value = null }
 
             <div class="page">
 
-                <!-- KPIs -->
                 <div class="kpi-grille clients__kpi">
                     <div class="kpi">
                         <div class="kpi__label">Clients actifs</div>
@@ -145,7 +135,6 @@ function fermerModale() { modale.value = false; edition.value = null }
                     </div>
                 </div>
 
-                <!-- Tableau clients -->
                 <div class="carte clients__carte">
                     <div class="carte__entete">
                         <h2>Liste des clients</h2>
@@ -181,7 +170,6 @@ function fermerModale() { modale.value = false; edition.value = null }
                                             </div>
                                             <div class="clients__pct">{{ pct(joursRealises(c.id), c.jours_contractualises) }}%</div>
                                         </td>
-                                        <!-- Badge alerte -->
                                         <td>
                                             <span
                                                 v-if="texteAlerte(c.id)"
@@ -211,7 +199,6 @@ function fermerModale() { modale.value = false; edition.value = null }
             </div>
         </div>
 
-        <!-- Modale -->
         <div v-if="modale" class="modale-fond" @click.self="fermerModale">
             <div class="modale">
                 <div class="modale__entete">
@@ -245,7 +232,6 @@ function fermerModale() { modale.value = false; edition.value = null }
             </div>
         </div>
 
-        <!-- Confirmation suppression -->
         <div v-if="confirmerSuppr" class="modale-fond" @click.self="confirmerSuppr = null">
             <div class="modale" style="max-width:400px">
                 <div class="modale__entete">
@@ -261,6 +247,7 @@ function fermerModale() { modale.value = false; edition.value = null }
                 </div>
             </div>
         </div>
+
         <div v-if="voirAlertes" class="popup-liste-fond" @click.self="voirAlertes = false">
             <div class="popup-liste">
                 <div class="popup-liste__entete">

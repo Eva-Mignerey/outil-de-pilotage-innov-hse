@@ -6,15 +6,15 @@ import { estAdmin } from '../permissions.js'
 
 defineProps({
     user: { type: Object, default: () => ({}) },
-    nbAlertes: { type: Number, default: 0          }
+    nbAlertes: { type: Number, default: 0 }
 })
 defineEmits(['voirAlertes'])
 
 const ouvert = ref(false)
 const router = useRouter()
 
-function seDeconnecter() {
-    store.setUser(null)
+async function seDeconnecter() {
+    await store.setUser(null)
     sessionStorage.removeItem('ihse_toasts_affichés')
     router.push('/connexion')
 }
@@ -71,7 +71,7 @@ function seDeconnecter() {
         <div class="sidebar_user">
             <div class="sidebar_user-info">
                 <div class="user-nom">{{ user.nom }}</div>
-                <div class="user-role">{{ user.profil === 'admin' ? 'Administrateur' : 'Consultant' }}</div>
+                <div class="user-role">{{ user.role === 'admin' ? 'Administrateur' : 'Consultant' }}</div>
             </div>
             <button class="sidebar_deconnexion" @click="seDeconnecter" title="Se déconnecter de la session"><img src="/images/deconnexion.svg" alt="déconnexion"></button>
         </div>
