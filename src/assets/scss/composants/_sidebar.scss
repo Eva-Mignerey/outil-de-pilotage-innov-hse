@@ -1,6 +1,6 @@
 @import '../_layout';
 
-.layout_sidebar {
+.layout__sidebar {
     width: $sidebar-largeur;
     background: $bleu-fonce;
     position: fixed;
@@ -178,11 +178,11 @@
 // responsive
 @media (max-width: $mobile) {
 
-    .layout_sidebar {
+    .layout__sidebar {
         transform: translateX(-100%);
     }
 
-    .layout_sidebar.sidebar--ouvert {
+    .layout__sidebar.sidebar--ouvert {
         transform: translateX(0);
     }
 

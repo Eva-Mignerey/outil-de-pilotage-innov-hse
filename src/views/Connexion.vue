@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '../../store.js'
+import { loginUser } from '../services/dataService.js'
 
 const router = useRouter()
 
@@ -10,27 +11,26 @@ const nom = ref('')
 const email = ref('')
 const password = ref('')
 const messageErreur = ref('')
+const chargement = ref(false)
 
-function seConnecter() {
-    if (!profil.value) {
-        messageErreur.value = 'Veuillez sélectionner un profil.'
-        return
-    }
-    if (!nom.value || !email.value || !password.value) {
+async function seConnecter() {
+    if (!email.value || !password.value) {
         messageErreur.value = 'Tous les champs sont obligatoires.'
         return
     }
 
-    const comptes = JSON.parse(localStorage.getItem('ihse_comptes') || '[]')
-    const compte = comptes.find(c => c.email === email.value && c.password === password.value)
+    chargement.value = true
+    messageErreur.value = ''
 
-    if (!compte) {
+    try {
+        const user = await loginUser(email.value, password.value)
+        store.user = user
+        router.push('/tableau-bord')
+    } catch (e) {
         messageErreur.value = 'Email ou mot de passe incorrect.'
-        return
+    } finally {
+        chargement.value = false
     }
-
-    store.setUser(compte)
-    router.push('/tableau-bord')
 }
 </script>
 
@@ -58,7 +58,9 @@ function seConnecter() {
 
             <p class="erreur">{{ messageErreur }}</p>
 
-            <button class="auth-btn" type="submit">Se connecter</button>
+            <button class="auth-btn" type="submit" :disabled="chargement">
+                {{ chargement ? 'Connexion...' : 'Se connecter' }}
+            </button>
         </form>
 
         <p class="auth-lien-texte">

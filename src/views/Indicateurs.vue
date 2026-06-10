@@ -94,13 +94,14 @@ const categories = [
 }
 ]
 
-const charges = ref(
-    store.charges
-    || Object.fromEntries(
-        categories.flatMap(c =>
-            c.indicateurs.map(i => [i.cle, Array(12).fill('')])
+const charges = computed(() =>
+    store.charges && Object.keys(store.charges).length
+        ? store.charges
+        : Object.fromEntries(
+            categories.flatMap(c =>
+                c.indicateurs.map(i => [i.cle, Array(12).fill('')])
+            )
         )
-    )
 )
 
 const moisSaisie = ref(moisActuel)
@@ -111,7 +112,7 @@ const valeur = (cle, m = moisSaisie.value) =>
 const erreurNegatif = ref(false)
 let erreurTimer = null
 
-const saisir = (cle, val) => {
+const saisir = async (cle, val) => {
     const ind = categories.flatMap(c => c.indicateurs).find(i => i.cle === cle)
     const num = parseFloat(val)
     if (!isNaN(num) && num < 0 && !ind?.autoriserNegatif) {
@@ -120,9 +121,10 @@ const saisir = (cle, val) => {
         erreurTimer = setTimeout(() => { erreurNegatif.value = false }, 3000)
         return
     }
-    charges.value[cle] ??= Array(12).fill('')
-    charges.value[cle][moisSaisie.value] = val
-    store.setCharges(charges.value)
+    const updated = { ...charges.value }
+    updated[cle] = [...(updated[cle] || Array(12).fill(''))]
+    updated[cle][moisSaisie.value] = val
+    await store.setCharges(updated)
 }
 
 const graphiqueActif = ref(null)
@@ -266,19 +268,11 @@ function exportPDF() {
         </Transition>
 
         <div class="page">
-            <div
-                v-for="cat in categories"
-                :key="cat.id"
-                class="charges__ligne"
-            >
-                <div
-                    class="charges__cat-label"
-                    :style="{ background: cat.couleur + '18', color: cat.couleur }"
-                >
+            <div v-for="cat in categories" :key="cat.id" class="charges__ligne">
+                <div class="charges__cat-label" :style="{ background: cat.couleur + '18', color: cat.couleur }">
                     <img :src="cat.picto" :alt="cat.label" class="charges__cat-picto" />
                     {{ cat.label }}
                 </div>
-
                 <div class="charges__cartes">
                     <ChargeCard
                         v-for="ind in cat.indicateurs"
@@ -288,7 +282,6 @@ function exportPDF() {
                         :valeur="valeur"
                         :saisir="saisir"
                     />
-
                     <button
                         class="charges__btn-evolution"
                         @click="ouvrirGraphique(cat)"
@@ -301,11 +294,7 @@ function exportPDF() {
         </div>
     </div>
 
-    <div
-        v-if="graphiqueActif"
-        class="modale-fond"
-        @click.self="graphiqueActif = null"
-    >
+    <div v-if="graphiqueActif" class="modale-fond" @click.self="graphiqueActif = null">
         <div class="modale">
             <canvas ref="canvasRef" height="280"></canvas>
         </div>

@@ -234,7 +234,7 @@ function exportPDF() {
     const lignes = missionsDuMoisListe.value.map(m => [
         m.titre,
         nomEmploye(m.employe_id),
-        clients.value.find(c => c.id === m.client_id)?.nom || '—',
+        clients.value.find(c => c.id / m.client_id)?.nom || '—',
         `${m.nb_jours || 0}j`,
         labelStatut(m.statut),
         formaterDate(m.date_debut),
@@ -251,6 +251,22 @@ function exportPDF() {
     })
 
     doc.save(`bilan-${new Date().toISOString().slice(0, 7)}.pdf`)
+}
+
+function Aborded ($id = null, $name = ''){
+    _contructor($id, $name)
+    return {
+        id: $id,
+        nom: $name,
+    }
+}
+
+function _contructor ($id, $name){
+    if (!$id) {
+        console.error('L\'ID est requis pour créer un Aborded.')    
+    }
+    this.id = $id;
+    this.nom = $name;
 }
 </script>
 

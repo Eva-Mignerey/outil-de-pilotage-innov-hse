@@ -7,7 +7,6 @@ import { estAdmin } from '../permissions.js'
 const clients = computed(() => store.clients)
 const missions = computed(() => store.missions)
 const user = computed(() => store.user || {})
-const facturations = ref([...store.facturations])
 
 const modale = ref(false)
 const clientSel = ref(null)
@@ -29,7 +28,7 @@ function classeProgression(p) {
 }
 
 function factClient(clientId) {
-    return facturations.value.find(f => f.client_id === clientId) || {}
+    return store.getClientExtra(clientId, 'facturation') || {}
 }
 
 function ecart(clientId) {
@@ -41,14 +40,11 @@ function ecart(clientId) {
 function ouvrirFacturation(c) {
     clientSel.value = c
     const f = factClient(c.id)
-
-    // Calcul automatique si pas encore saisi manuellement
     const theorAuto = Math.round((c.taux_journalier || 0) * (c.jours_contractualises || 0))
     const reelAuto = Math.round((c.taux_journalier || 0) * joursRealises(c.id))
-
     formFact.value = {
         theorique: f.theorique !== undefined && f.theorique !== '' ? f.theorique : theorAuto || '',
-        reel: f.reel !== undefined && f.reel !== '' ? f.reel : reelAuto  || '',
+        reel: f.reel !== undefined && f.reel !== '' ? f.reel : reelAuto || '',
         objectif: f.objectif || '',
         facture: f.facture || '',
         commentaire: f.commentaire || ''
@@ -56,11 +52,8 @@ function ouvrirFacturation(c) {
     modale.value = true
 }
 
-function sauvegarder() {
-    const list = facturations.value.filter(f => f.client_id !== clientSel.value.id)
-    list.push({ client_id: clientSel.value.id, ...formFact.value })
-    facturations.value = 
-    store.setFacturations(list)
+async function sauvegarder() {
+    await store.setClientExtra(clientSel.value.id, 'facturation', { ...formFact.value })
     modale.value = false
 }
 
@@ -106,14 +99,13 @@ const totalFacture = computed(() =>
                     <div class="kpi">
                         <div class="kpi__label">
                             Total facturé
-                            <span class="kpi__info" title="Somme des montants facturés saisis manuellement dans le tableau. Correspond aux factures effectivement émises aux clients. Peut différer du réel si une facture n'a pas encore été envoyée.">ⓘ</span>
+                            <span class="kpi__info" title="Somme des montants facturés saisis manuellement dans le tableau.">ⓘ</span>
                         </div>
                         <div class="kpi__sous-label">Somme des factures émises saisies</div>
                         <div class="kpi__valeur">{{ totalFacture.toLocaleString('fr-FR') }} €</div>
                     </div>
                 </div>
 
-                <!-- Tableau contrats -->
                 <div class="carte">
                     <div class="carte__entete">
                         <h2>Suivi par client</h2>
@@ -174,7 +166,6 @@ const totalFacture = computed(() =>
             </div>
         </div>
 
-        <!-- Modale saisie facturation -->
         <div v-if="modale" class="modale-fond" @click.self="modale = false">
             <div class="modale">
                 <div class="modale__entete">
@@ -196,7 +187,7 @@ const totalFacture = computed(() =>
                             <input v-model="formFact.objectif" type="number" />
                         </div>
                         <div class="champ">
-                            <label>Facturé <br>(€)</label>
+                            <label>Facturé (€)</label>
                             <input v-model="formFact.facture" type="number" />
                         </div>
                     </div>

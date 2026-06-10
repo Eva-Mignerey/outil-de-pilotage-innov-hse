@@ -258,12 +258,8 @@ function couleurEcart(ecart) {
                     <div class="carte__entete">
                         <h2>Données réelles</h2>
                         <div style="display:flex;align-items:center;gap:10px">
-                            <!-- <span style="font-size:.78rem;color:#8092A4">
-                                Formules :
-                                <strong>Planifiés + À planifier = Dûs</strong>
-                                &nbsp;|&nbsp;
-                                <strong>Non chargés + Dûs = Jours ouvrés</strong>
-                            </span> -->
+                            <!-- Formules : Planifiés + À planifier = Dûs
+                                            Non chargés + Dûs = Jours ouvrés</strong> -->
                             <button
                                 class="btn btn--fantome btn--petit"
                                 @click="vueGlobale = !vueGlobale"
@@ -274,7 +270,6 @@ function couleurEcart(ecart) {
                     </div>
 
                     <div class="carte__corps" style="padding:0">
-
 
                         <div v-if="!vueGlobale">
                             <!-- pc -->
@@ -401,7 +396,7 @@ function couleurEcart(ecart) {
                                                     {{ trimestre.reduce((s, t) => s + joursDus(emp.id, t.annee, t.mois), 0) }}j
                                                 </td>
                                             </tr>
-                                            <!-- Ligne totaux -->
+
                                             <tr style="background:#F0F4F8;font-weight:700">
                                                 <td>TOTAL</td>
                                                 <template v-for="t in trimestre" :key="'tot-' + t.mois">

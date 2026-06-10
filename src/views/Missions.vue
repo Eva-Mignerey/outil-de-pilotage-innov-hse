@@ -9,7 +9,7 @@ import autoTable from 'jspdf-autotable'
 const employes = computed(() => store.employes)
 const clients = computed(() => store.clients)
 const user = computed(() => store.user || {})
-const missions = ref([...store.missions])
+const missions = computed(() => store.missions)
 
 const filtreEmploye = ref('')
 const filtreStatut = ref('')
@@ -47,28 +47,27 @@ function formaterDatePDF(d) {
 function labelStatut(s) { return { valide: 'Validé', en_attente: 'En attente', outlook: 'Outlook' }[s] || s }
 function classeBadge(s) { return { valide: 'badge--valide', en_attente: 'badge--attente', outlook: 'badge--outlook' }[s] || '' }
 
-function sauvegarder() {
+async function sauvegarder() {
     if (!form.value.titre || !form.value.employe_id || !form.value.client_id) return
     if (edition.value) {
-        const i = missions.value.findIndex(m => m.id === edition.value.id)
-        missions.value[i] = { ...edition.value, ...form.value }
+        await store.setMissions(store.missions.map(m =>
+            m.id === edition.value.id ? { ...m, ...form.value } : m
+        ))
     } else {
-        missions.value.push({ id: Date.now(), ...form.value })
+        await store.setMissions([...store.missions, { id: Date.now(), ...form.value }])
     }
-    store.setMissions(missions.value)
     fermerModale()
 }
 
-function valider(m) {
-    const i = missions.value.findIndex(x => x.id === m.id)
-    missions.value[i].statut = 'valide'
-    store.setMissions(missions.value)
+async function valider(m) {
+    await store.setMissions(store.missions.map(x =>
+        x.id === m.id ? { ...x, statut: 'valide' } : x
+    ))
 }
 
-function supprimer(id) {
+async function supprimer(id) {
     if (!confirm('Supprimer cette tâche ?')) return
-    missions.value = missions.value.filter(m => m.id !== id)
-    store.setMissions(missions.value)
+    await store.setMissions(store.missions.filter(m => m.id !== id))
 }
 
 function ouvrirAjout() {
@@ -79,6 +78,47 @@ function ouvrirAjout() {
 
 function ouvrirEdition(m) { form.value = { heures_supp_client: '', ...m }; edition.value = m; modale.value = true }
 function fermerModale() { modale.value = false; edition.value = null }
+
+const lignesOuvertes = ref(new Set())
+function toggleLigne(id) {
+    if (lignesOuvertes.value.has(id)) lignesOuvertes.value.delete(id)
+    else lignesOuvertes.value.add(id)
+    lignesOuvertes.value = new Set(lignesOuvertes.value)
+}
+
+const inputsCommentaire = ref({})
+const editionCommentaire = ref({})
+
+function getCommentaires(missionId) {
+    const raw = store.getMissionExtra(missionId, 'commentaires', '')
+    return raw ? raw.split('\n').filter(l => l) : []
+}
+
+function ajouterLigne(missionId) {
+    const val = (inputsCommentaire.value[missionId] || '').trim()
+    if (!val) return
+    const lignes = getCommentaires(missionId)
+    store.setMissionExtra(missionId, 'commentaires', [...lignes, val].join('\n'))
+    inputsCommentaire.value[missionId] = ''
+}
+
+function supprimerLigne(missionId, index) {
+    const lignes = getCommentaires(missionId)
+    lignes.splice(index, 1)
+    store.setMissionExtra(missionId, 'commentaires', lignes.join('\n'))
+}
+
+function commencerEdition(missionId, index, texte) {
+    editionCommentaire.value = { missionId, index, texte }
+}
+
+function sauvegarderEdition() {
+    const { missionId, index, texte } = editionCommentaire.value
+    const lignes = getCommentaires(missionId)
+    lignes[index] = texte
+    store.setMissionExtra(missionId, 'commentaires', lignes.join('\n'))
+    editionCommentaire.value = {}
+}
 
 function exportPDF() {
     const doc = new jsPDF()
@@ -179,31 +219,68 @@ function exportPDF() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="m in missionsFiltrees" :key="m.id">
-                                        <td>
-                                            <div class="missions__titre">{{ m.titre }}</div>
-                                            <div v-if="m.type === 'outlook'" class="missions__outlook">↔ Outlook</div>
-                                        </td>
-                                        <td>{{ nomEmploye(m.employe_id) }}</td>
-                                        <td><span class="missions__client">{{ nomClient(m.client_id) }}</span></td>
-                                        <td>
-                                            <div class="missions__dates">
-                                                {{ formaterDate(m.date_debut) }}<br>→ {{ formaterDate(m.date_fin) }}
-                                            </div>
-                                        </td>
-                                        <td class="missions__jours">{{ m.nb_jours }}</td>
-                                        <td style="font-size:.8rem;color:#8092A4;max-width:140px">
-                                            {{ m.heures_supp_client || '—' }}
-                                        </td>
-                                        <td><span class="badge" :class="classeBadge(m.statut)">{{ labelStatut(m.statut) }}</span></td>
-                                        <td>
-                                            <div class="missions__actions">
-                                                <button v-if="m.statut === 'en_attente'" class="btn btn--primaire btn--petit" @click="valider(m)">✓</button>
-                                                <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(m)">Éditer</button>
-                                                <button class="btn btn--danger btn--petit" @click="supprimer(m.id)">✕</button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <template v-for="m in missionsFiltrees" :key="m.id">
+                                        <tr>
+                                            <td>
+                                                <div class="missions__titre">{{ m.titre }}</div>
+                                                <div v-if="m.type === 'outlook'" class="missions__outlook">↔ Outlook</div>
+                                            </td>
+                                            <td>{{ nomEmploye(m.employe_id) }}</td>
+                                            <td><span class="missions__client">{{ nomClient(m.client_id) }}</span></td>
+                                            <td>
+                                                <div class="missions__dates">
+                                                    {{ formaterDate(m.date_debut) }}<br>→ {{ formaterDate(m.date_fin) }}
+                                                </div>
+                                            </td>
+                                            <td class="missions__jours">{{ m.nb_jours }}</td>
+                                            <td style="font-size:.8rem;color:#8092A4;max-width:140px">
+                                                {{ m.heures_supp_client || '—' }}
+                                            </td>
+                                            <td><span class="badge" :class="classeBadge(m.statut)">{{ labelStatut(m.statut) }}</span></td>
+                                            <td>
+                                                <div class="missions__actions">
+                                                    <button v-if="m.statut === 'en_attente'" class="btn btn--primaire btn--petit" @click="valider(m)">✓</button>
+                                                    <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(m)">Éditer</button>
+                                                    <button
+                                                        class="btn btn--fantome btn--petit missions__btn-commentaire"
+                                                        :class="{ 'missions__btn-commentaire--actif': lignesOuvertes.has(m.id) }"
+                                                        @click="toggleLigne(m.id)"
+                                                        title="Commentaire"
+                                                    >▼<span v-if="getCommentaires(m.id).length" class="missions__commentaire-dot"></span></button>
+                                                    <button class="btn btn--danger btn--petit" @click="supprimer(m.id)">✕</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="lignesOuvertes.has(m.id)" class="missions__tr-commentaire">
+                                            <td colspan="8" class="missions__td-commentaire">
+                                                <ul class="missions__commentaire-liste">
+                                                    <li v-for="(ligne, i) in getCommentaires(m.id)" :key="i">
+                                                        <template v-if="editionCommentaire.missionId === m.id && editionCommentaire.index === i">
+                                                            <input
+                                                                class="missions__commentaire-edit"
+                                                                v-model="editionCommentaire.texte"
+                                                                @keydown.enter.prevent="sauvegarderEdition"
+                                                                @keydown.escape="editionCommentaire = {}"
+                                                            />
+                                                            <button class="missions__commentaire-suppr" @click="sauvegarderEdition">✓</button>
+                                                            <button class="missions__commentaire-suppr" @click="editionCommentaire = {}">✕</button>
+                                                        </template>
+                                                        <template v-else>
+                                                            {{ ligne }}
+                                                            <button class="missions__commentaire-suppr missions__commentaire-edit-btn" @click="commencerEdition(m.id, i, ligne)">✎</button>
+                                                            <button class="missions__commentaire-suppr" @click="supprimerLigne(m.id, i)">×</button>
+                                                        </template>
+                                                    </li>
+                                                </ul>
+                                                <input
+                                                    class="missions__commentaire-input"
+                                                    v-model="inputsCommentaire[m.id]"
+                                                    placeholder="Ajouter un élément…"
+                                                    @keydown.enter.prevent="ajouterLigne(m.id)"
+                                                    />
+                                            </td>
+                                        </tr>
+                                    </template>
                                     <tr v-if="missionsFiltrees.length === 0">
                                         <td colspan="8" class="missions__vide">Aucune tâche trouvée</td>
                                     </tr>
