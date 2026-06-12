@@ -51,17 +51,17 @@ async function seConnecter() {
             <span class="auth-select-fleche">&#8964;</span>
         </div>
 
-        <form class="auth-form" @submit.prevent="seConnecter">
+        <div class="auth-form">
             <input class="auth-input" type="text"     v-model="nom"      placeholder="nom" />
             <input class="auth-input" type="email"    v-model="email"    placeholder="adresse mail" />
             <input class="auth-input" type="password" v-model="password" placeholder="mot de passe" />
 
             <p class="erreur">{{ messageErreur }}</p>
 
-            <button class="auth-btn" type="submit" :disabled="chargement">
+            <button class="auth-btn" type="button" @click="seConnecter" :disabled="chargement">
                 {{ chargement ? 'Connexion...' : 'Se connecter' }}
             </button>
-        </form>
+        </div>
 
         <p class="auth-lien-texte">
             Vous n'avez pas de compte ?<br>

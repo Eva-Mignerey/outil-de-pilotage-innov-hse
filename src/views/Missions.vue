@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import ToastAlertes from '../components/ToastAlertes.vue'
 import store from '../../store.js'
+import { peutEcrire } from '../permissions.js'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -14,6 +15,21 @@ const missions = computed(() => store.missions)
 const filtreEmploye = ref('')
 const filtreStatut = ref('')
 const filtreClient = ref('')
+
+const moisActuel = new Date().getMonth()
+const anneeActuelle = new Date().getFullYear()
+const moisFiltre = ref(moisActuel)
+const anneeFiltre = ref(anneeActuelle)
+const nomsMois = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+
+function moisPrecedent() {
+    if (moisFiltre.value === 0) { moisFiltre.value = 11; anneeFiltre.value-- }
+    else moisFiltre.value--
+}
+function moisSuivant() {
+    if (moisFiltre.value === 11) { moisFiltre.value = 0; anneeFiltre.value++ }
+    else moisFiltre.value++
+}
 const modale = ref(false)
 const edition = ref(null)
 
@@ -25,11 +41,15 @@ const form = ref({
     date_fin: '',
     nb_jours: 1,
     heures_supp_client: '',
+    clients_secondaires: [],
     statut: 'en_attente'
 })
 
 const missionsFiltrees = computed(() =>
     missions.value.filter(m => {
+        if (!m.date_debut) return false
+        const [y, mo] = m.date_debut.split('-').map(Number)
+        if ((mo - 1) !== moisFiltre.value || y !== anneeFiltre.value) return false
         if (filtreEmploye.value && m.employe_id !== Number(filtreEmploye.value)) return false
         if (filtreStatut.value && m.statut !== filtreStatut.value) return false
         return !(filtreClient.value && m.client_id !== Number(filtreClient.value))
@@ -71,12 +91,12 @@ async function supprimer(id) {
 }
 
 function ouvrirAjout() {
-    form.value = { titre: '', employe_id: null, client_id: null, date_debut: '', date_fin: '', nb_jours: 1, heures_supp_client: '', statut: 'en_attente' }
+    form.value = { titre: '', employe_id: null, client_id: null, date_debut: '', date_fin: '', nb_jours: 1, heures_supp_client: '', clients_secondaires: [], statut: 'en_attente' }
     edition.value = null
     modale.value = true
 }
 
-function ouvrirEdition(m) { form.value = { heures_supp_client: '', ...m }; edition.value = m; modale.value = true }
+function ouvrirEdition(m) { form.value = { heures_supp_client: '', clients_secondaires: [], ...m }; edition.value = m; modale.value = true }
 function fermerModale() { modale.value = false; edition.value = null }
 
 const lignesOuvertes = ref(new Set())
@@ -164,7 +184,6 @@ function exportPDF() {
             3: { cellWidth: 42 },
         }
     })
-
     doc.save(`missions-${new Date().toISOString().slice(0, 10)}.pdf`)
 }
 </script>
@@ -178,14 +197,19 @@ function exportPDF() {
             <div class="topbar">
                 <span class="topbar__titre">Missions / Tâches</span>
                 <div class="topbar__actions">
+                    <div class="missions__nav-mois">
+                        <button class="btn btn--fantome btn--petit" @click="moisPrecedent">‹</button>
+                        <span class="missions__nav-mois-label">{{ nomsMois[moisFiltre] }} {{ anneeFiltre }}</span>
+                        <button class="btn btn--fantome btn--petit" @click="moisSuivant">›</button>
+                    </div>
                     <button class="btn btn--fantome btn--petit" @click="exportPDF">↓ PDF</button>
-                    <button class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Ajouter</button>
+                    <button v-if="peutEcrire" class="btn btn--primaire btn--petit missions__btn-ajout-desktop" @click="ouvrirAjout">+ Ajouter</button>
                 </div>
             </div>
 
             <div class="page">
-
                 <div class="missions__filtres">
+                    <button v-if="peutEcrire" class="btn btn--primaire btn--petit missions__btn-ajout-mobile" @click="ouvrirAjout">+ Ajouter</button>
                     <select class="missions__filtre" v-model="filtreEmploye">
                         <option value="">Tous les consultants</option>
                         <option v-for="e in employes" :key="e.id" :value="e.id">{{ e.nom }}</option>
@@ -226,7 +250,10 @@ function exportPDF() {
                                                 <div v-if="m.type === 'outlook'" class="missions__outlook">↔ Outlook</div>
                                             </td>
                                             <td>{{ nomEmploye(m.employe_id) }}</td>
-                                            <td><span class="missions__client">{{ nomClient(m.client_id) }}</span></td>
+                                            <td>
+                                                <span class="missions__client">{{ nomClient(m.client_id) }}</span>
+                                                <span v-for="id in (m.clients_secondaires || [])" :key="id" style="display:block;font-size:.75rem;color:#8092A4">+ {{ nomClient(id) }}</span>
+                                            </td>
                                             <td>
                                                 <div class="missions__dates">
                                                     {{ formaterDate(m.date_debut) }}<br>→ {{ formaterDate(m.date_fin) }}
@@ -239,15 +266,15 @@ function exportPDF() {
                                             <td><span class="badge" :class="classeBadge(m.statut)">{{ labelStatut(m.statut) }}</span></td>
                                             <td>
                                                 <div class="missions__actions">
-                                                    <button v-if="m.statut === 'en_attente'" class="btn btn--primaire btn--petit" @click="valider(m)">✓</button>
-                                                    <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(m)">Éditer</button>
+                                                    <button v-if="m.statut === 'en_attente' && peutEcrire" class="btn btn--primaire btn--petit" @click="valider(m)">✓</button>
+                                                    <button v-if="peutEcrire" class="btn btn--fantome btn--petit" @click="ouvrirEdition(m)">Éditer</button>
                                                     <button
                                                         class="btn btn--fantome btn--petit missions__btn-commentaire"
                                                         :class="{ 'missions__btn-commentaire--actif': lignesOuvertes.has(m.id) }"
                                                         @click="toggleLigne(m.id)"
                                                         title="Commentaire"
                                                     >▼<span v-if="getCommentaires(m.id).length" class="missions__commentaire-dot"></span></button>
-                                                    <button class="btn btn--danger btn--petit" @click="supprimer(m.id)">✕</button>
+                                                    <button v-if="peutEcrire" class="btn btn--danger btn--petit" @click="supprimer(m.id)">✕</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -289,7 +316,6 @@ function exportPDF() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -301,7 +327,7 @@ function exportPDF() {
                 </div>
                 <div class="modale__corps">
                     <div class="champ">
-                        <label>Titre *</label>
+                        <label>Titre</label>
                         <input v-model="form.titre" />
                     </div>
                     <div class="missions__form-grille">
@@ -312,22 +338,46 @@ function exportPDF() {
                             </select>
                         </div>
                         <div class="champ">
-                            <label>Client *</label>
-                            <select v-model.number="form.client_id">
-                                <option v-for="c in clients" :key="c.id" :value="c.id">{{ c.nom }}</option>
-                            </select>
+                            <label>Client principal *</label>
+                            <input
+                                list="liste-clients-principal"
+                                :value="form.client_id ? nomClient(form.client_id) : ''"
+                                @change="e => { const c = clients.find(c => c.nom === e.target.value); form.client_id = c ? c.id : null }"
+                                placeholder="Rechercher un client…"
+                            />
+                            <datalist id="liste-clients-principal">
+                                <option v-for="c in clients" :key="c.id" :value="c.nom" />
+                            </datalist>
+                        </div>
+                        <div class="champ" style="grid-column: span 2">
+                            <label>Client(s) secondaire(s)</label>
+                            <div class="fiche__tags" style="margin-bottom:6px">
+                                <span v-for="id in form.clients_secondaires" :key="id" class="fiche__tag">
+                                    {{ nomClient(id) }}
+                                    <button class="fiche__tag-suppr" @click="form.clients_secondaires = form.clients_secondaires.filter(x => x !== id)">×</button>
+                                </span>
+                                <span v-if="!form.clients_secondaires.length" class="fiche__tags-vide">Aucun client secondaire</span>
+                            </div>
+                            <input
+                                list="liste-clients-secondaire"
+                                placeholder="Rechercher un client secondaire…"
+                                @change="e => { const c = clients.find(c => c.nom === e.target.value && c.id !== form.client_id && !form.clients_secondaires.includes(c.id)); if (c) form.clients_secondaires = [...form.clients_secondaires, c.id]; e.target.value = '' }"
+                            />
+                            <datalist id="liste-clients-secondaire">
+                                <option v-for="c in clients.filter(c => c.id !== form.client_id && !form.clients_secondaires.includes(c.id))" :key="c.id" :value="c.nom" />
+                            </datalist>
                         </div>
                         <div class="champ">
                             <label>Date début *</label>
-                            <input v-model="form.date_debut" type="date" />
+                            <input v-model="form.date_debut" type="date" required />
                         </div>
                         <div class="champ">
                             <label>Date fin *</label>
-                            <input v-model="form.date_fin" type="date" />
+                            <input v-model="form.date_fin" type="date" required />
                         </div>
                         <div class="champ">
                             <label>Nombre de jours *</label>
-                            <input v-model.number="form.nb_jours" type="number" min="0.5" step="0.5" />
+                            <input v-model.number="form.nb_jours" type="number" min="0.5" step="0.5" required />
                         </div>
                         <div class="champ">
                             <label>Statut</label>

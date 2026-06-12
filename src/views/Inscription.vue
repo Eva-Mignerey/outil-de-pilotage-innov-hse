@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
+import store from '../../store.js'
 import { auth, db } from '../firebase.js'
 
 const router = useRouter()
@@ -43,7 +44,8 @@ async function sInscrire() {
             email: email.value,
             role: profil.value
         })
-        router.push('/connexion')
+        store.user = { uid: cred.user.uid, email: cred.user.email, role: profil.value }
+        router.push('/tableau-bord')
     } catch (e) {
         if (e.code === 'auth/email-already-in-use') {
             messageErreur.value = 'Un compte avec cet email existe déjà.'
