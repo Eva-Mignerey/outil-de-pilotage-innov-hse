@@ -153,3 +153,32 @@
 
     &:focus { border-color: $bleu-clair; }
 }
+.missions__nav-mois {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.missions__nav-mois-label {
+    font-family: $font-titre;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $bleu-fonce;
+    min-width: 160px;
+    text-align: center;
+}
+
+.missions__btn-ajout-mobile {
+    display: none;
+
+    @media (max-width: $mobile) {
+        display: flex;
+    }
+}
+
+.missions__btn-ajout-desktop {
+    @media (max-width: $mobile) {
+        display: none;
+    }
+}

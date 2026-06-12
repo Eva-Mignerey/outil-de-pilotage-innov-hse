@@ -28,13 +28,17 @@ const titreMois = computed(() =>
     new Date(annee.value, mois.value).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 )
 
+function formatDateLocale(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 const jours = computed(() => {
-    const nb = new Date(annee.value, mois.value + 1, 0).getDate()
+    const nb = new Date(annee.value, mois.value +1, 0).getDate()
     return Array.from({ length: nb }, (_, i) => {
         const d = new Date(annee.value, mois.value, i + 1)
         const dow = d.getDay()
         return {
-            date: d.toISOString().split('T')[0],
+            date: formatDateLocale(d),
             num: i + 1,
             lettre: ['D','L','M','M','J','V','S'][dow],
             weekend: dow === 0 || dow === 6

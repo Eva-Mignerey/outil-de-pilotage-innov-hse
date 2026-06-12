@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
 import store from '../../store.js'
+import { peutEcrire } from '../permissions.js'
 
 const employes = ref([...store.employes])
 const missions = computed(() => store.missions)
@@ -69,7 +70,7 @@ function fermerModale() { modale.value = false; edition.value = null }
             <div class="topbar">
                 <span class="topbar__titre">Équipe</span>
                 <div class="topbar__actions">
-                    <button class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Ajouter</button>
+                    <button v-if="peutEcrire" class="btn btn--primaire btn--petit" @click="ouvrirAjout">+ Ajouter</button>
                 </div>
             </div>
 
@@ -143,8 +144,8 @@ function fermerModale() { modale.value = false; edition.value = null }
 
                             <!-- Actions -->
                             <div class="employes__actions">
-                                <button class="btn btn--fantome btn--petit" @click="ouvrirEdition(emp)">Éditer</button>
-                                <button class="btn btn--danger btn--petit" @click="supprimer(emp.id)">Suppr.</button>
+                                <button v-if="peutEcrire" class="btn btn--fantome btn--petit" @click="ouvrirEdition(emp)">Éditer</button>
+                                <button v-if="peutEcrire" class="btn btn--danger btn--petit" @click="supprimer(emp.id)">Suppr.</button>
                             </div>
                         </div>
                     </div>

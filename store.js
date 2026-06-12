@@ -7,9 +7,12 @@ import missionsData from './src/data/missions.json'
 import {
     initData,
     getCharges, setCharges as svcSetCharges,
+    getAllClientExtras, getAllMissionExtras,
     setClientExtra as svcSetClientExtra,
     setMissionExtra as svcSetMissionExtra,
     updateClient as svcUpdateClient,
+    updateMission as svcUpdateMission,
+    deleteMission as svcDeleteMission,
     setProspect as svcSetProspect,
     deleteProspect as svcDeleteProspect,
     subscribeToClients,
@@ -50,6 +53,9 @@ const store = reactive({
         })
 
         this.charges = await getCharges()
+        this.clientsExtra = await getAllClientExtras()
+        this.missionsExtra = await getAllMissionExtras()
+
         this._ready = true
     },
 
@@ -80,9 +86,14 @@ const store = reactive({
     },
 
     async setMissions(data) {
-    for (const m of data) {
-        await svcUpdateMission(String(m.id), m)
-    }
+        const anciens = this.missions.map(m => String(m.id))
+        const nouveaux = data.map(m => String(m.id))
+        for (const m of data) {
+            await svcUpdateMission(String(m.id), m)
+        }
+        for (const id of anciens) {
+            if (!nouveaux.includes(id)) await svcDeleteMission(id)
+        }
     },
 
     async setCharges(data) {
