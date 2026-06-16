@@ -475,6 +475,18 @@ function couleurEcart(ecart) {
                     <p><strong>Jours :</strong> {{ detail.nb_jours }}</p>
                     <p><span class="badge" :class="classeBadge(detail.statut)">{{ labelStatut(detail.statut) }}</span></p>
                 </div>
+                <div class="modale__pied">
+                    <router-link
+                        class="btn btn--fantome btn--petit"
+                        :to="'/clients/' + detail.client_id"
+                        @click="detail = null"
+                    >Voir la fiche client</router-link>
+                    <router-link
+                        class="btn btn--primaire btn--petit"
+                        to="/missions"
+                        @click="detail = null"
+                    >Voir les missions</router-link>
+                </div>
             </div>
         </div>
 

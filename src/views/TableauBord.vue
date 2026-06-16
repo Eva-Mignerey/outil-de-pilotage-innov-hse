@@ -328,12 +328,12 @@ function _contructor ($id, $name){
                         </div>
                         <div class="carte__corps">
                             <canvas ref="barRef" height="200"></canvas>
-                            <div v-for="emp in employes" :key="emp.id">
-                                <div class="dashboard__pills">
+                            <div class="dashboard__pills">
+                                <template v-for="emp in employes" :key="emp.id">
                                     <span v-for="r in joursParClient(emp.id)" :key="r.client.id" class="dashboard__pill">
                                         {{ emp.nom.split(' ')[0] }} · {{ r.client.nom }} · {{ r.jours }}j
                                     </span>
-                                </div>
+                                </template>
                             </div>
                         </div>
                     </div>

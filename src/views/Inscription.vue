@@ -45,7 +45,7 @@ async function sInscrire() {
             role: profil.value
         })
         store.user = { uid: cred.user.uid, email: cred.user.email, role: profil.value }
-        router.push('/tableau-bord')
+        router.push('/connexion')
     } catch (e) {
         if (e.code === 'auth/email-already-in-use') {
             messageErreur.value = 'Un compte avec cet email existe déjà.'
