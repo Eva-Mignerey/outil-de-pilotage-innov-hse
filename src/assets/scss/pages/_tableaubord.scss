@@ -38,6 +38,17 @@
     color: $bleu-fonce;
 }
 
+.dashboard__donut {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.dashboard__donut-canvas {
+    width: 180px;
+    flex-shrink: 0;
+}
+
 .dashboard__grille {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -95,5 +106,31 @@
         width: 100%;
         max-width: 200px;
         margin: 0 auto;
+    }
+}
+.dashboard__pills {
+    max-height: 120px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.dashboard__legende {
+    margin-top: auto;
+    max-height: 160px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+
+    &::-webkit-scrollbar {
+        display: none;
     }
 }
