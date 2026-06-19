@@ -40,3 +40,7 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Firebase
+firestore-export.json
+export-firestore.mjs

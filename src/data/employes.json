@@ -2,7 +2,7 @@
     {
         "id": 1,
         "nom": "Andrea Romary",
-        "email": "a.romary@innov-hse.fr",
+        "email": "a.romary@innov-hse.com",
         "equipe": "Troyes",
         "capacite_jours": 218,
         "conges_jours": 25,
@@ -12,7 +12,7 @@
     {
         "id": 2,
         "nom": "Antonin Guay Hemard",
-        "email": "a.guayhemard@innov-hse.fr",
+        "email": "a.guayhemard@innov-hse.com",
         "equipe": "Troyes",
         "capacite_jours": 218,
         "conges_jours": 25,
@@ -22,7 +22,7 @@
     {
         "id": 3,
         "nom": "Matthieu Roche",
-        "email": "m.roche@innov-hse.fr",
+        "email": "m.roche@innov-hse.com",
         "equipe": "Troyes",
         "capacite_jours": 218,
         "conges_jours": 25,
@@ -32,7 +32,7 @@
     {
         "id": 4,
         "nom": "Damaris Quintin",
-        "email": "d.quintin@innov-hse.fr",
+        "email": "d.quintin@innov-hse.com",
         "equipe": "Troyes",
         "capacite_jours": 218,
         "conges_jours": 25,

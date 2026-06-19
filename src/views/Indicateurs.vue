@@ -5,8 +5,29 @@ import ChargeCard from '../components/ChargeCard.vue'
 import store from '../../store.js'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { peutEcrire } from '../permissions.js'
 
 const user = computed(() => store.user || {})
+const missions = computed(() => store.missions)
+const employes = computed(() => store.employes)
+
+function joursOuvresMois(m, a) {
+    const nb = new Date(a, m + 1, 0).getDate()
+    let count = 0
+    for (let i = 1; i <= nb; i++) {
+        const dow = new Date(a, m, i).getDay()
+        if (dow !== 0 && dow !== 6) count++
+    }
+    return count
+}
+
+function joursPlannifiesMois(empId, m, a) {
+    const debut = new Date(a, m, 1).toISOString().split('T')[0]
+    const fin = new Date(a, m + 1, 0).toISOString().split('T')[0]
+    return missions.value
+        .filter(x => x.employe_id === empId && x.date_fin >= debut && x.date_debut <= fin && x.statut === 'valide')
+        .reduce((s, x) => s + (x.nb_jours || 0), 0)
+}
 
 const nomsMois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
 const moisActuel = new Date().getMonth()
@@ -23,7 +44,7 @@ const categories = [
         { cle: 'peage', label: 'Péage', unite: '€', source: 'DKV + Tickets' },
         { cle: 'restauration', label: 'Restauration', unite: '€', source: 'Tickets' },
         { cle: 'km', label: 'Km parcourus', unite: 'km', source: 'Feuilles émargement' },
-        { cle: 'cout_km', label: 'Coût / km', unite: '€', source: 'KM/CARBURANT' },
+        { cle: 'cout_km', label: 'Coût / km', unite: '€', source: 'Calculé automatiquement', readOnly: true },
     ]
 },
 {
@@ -32,11 +53,10 @@ const categories = [
     couleur: '#84EE57',
     picto: 'images/rh.svg',
     indicateurs: [
-        { cle: 'taux_absence', label: "Taux d'absence", unite: '%', source: 'Planning congés' },
-        { cle: 'conges', label: 'Congés restants', unite: 'j', source: 'Compta' },
+        { cle: 'jours_absence', label: "Jours d'absence", unite: 'j', source: 'Planning congés' },
+        { cle: 'taux_absence', label: "Taux d'absence", unite: '%', source: 'Calculé automatiquement', readOnly: true },
         { cle: 'taux_occup', label: "Taux d'occupation", unite: '%', source: 'Planning' },
         { cle: 'entretien_vh', label: 'Entretien véhicules', unite: '€', source: 'Factures' },
-        { cle: 'formation', label: 'Temps avant expiration', unite: 'j', source: 'Zeendoc' },
     ]
 },
 {
@@ -106,14 +126,41 @@ const charges = computed(() =>
 
 const moisSaisie = ref(moisActuel)
 
-const valeur = (cle, m = moisSaisie.value) =>
-    charges.value[cle]?.[m] || ''
+
+const valeur = (cle, m = moisSaisie.value) => {
+    if (cle === 'cout_km') {
+        const carburant = parseFloat(charges.value['carburant']?.[m]) || 0
+        const km = parseFloat(charges.value['km']?.[m]) || 0
+        if (km === 0) return ''
+        return (carburant / km).toFixed(2)
+    }
+    if (cle === 'jours_travailles') {
+        return joursOuvresMois(m, annee)
+    }
+    if (cle === 'taux_absence') {
+        const absence = parseFloat(charges.value['jours_absence']?.[m]) || 0
+        const travailles = joursOuvresMois(m, annee)
+        if (travailles === 0) return ''
+        return ((absence / travailles) * 100).toFixed(1)
+    }
+    if (cle === 'taux_occup') {
+        const nbEmployes = employes.value.length
+        if (nbEmployes === 0) return ''
+        const totalOuvres = joursOuvresMois(m, annee) * nbEmployes
+        if (totalOuvres === 0) return ''
+        const totalPlanifies = employes.value.reduce((s, e) => s + joursPlannifiesMois(e.id, m, annee), 0)
+        return ((totalPlanifies / totalOuvres) * 100).toFixed(1)
+    }
+    return charges.value[cle]?.[m] || ''
+}
 
 const erreurNegatif = ref(false)
 let erreurTimer = null
 
 const saisir = async (cle, val) => {
+    if (!peutEcrire.value) return
     const ind = categories.flatMap(c => c.indicateurs).find(i => i.cle === cle)
+    if (ind?.readOnly) return
     const num = parseFloat(val)
     if (!isNaN(num) && num < 0 && !ind?.autoriserNegatif) {
         erreurNegatif.value = true
@@ -170,7 +217,7 @@ watch(graphiqueActif, async () => {
                 return {
                     label: ind.label,
                     data: Array(12).fill(0).map((_, m) =>
-                        Number(charges.value[ind.cle]?.[m]) || 0
+                        Number(valeur(ind.cle, m)) || 0
                     ),
                     borderColor: color,
                     backgroundColor: color + '20',

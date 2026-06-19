@@ -180,7 +180,7 @@ Toutes les données sont stockées dans Firestore et synchronisées en temps ré
 Toutes les opérations Firebase passent exclusivement par `src/services/dataService.js`. Le store et les composants n'appellent jamais Firebase directement. Cette architecture permet une migration future vers une API REST (Symfony / Node + SQL) sans modifier le front :
 
 ```js
-// Aujourd'hui, Firebase
+// Aujourd'hui, Firebasenpm
 dataService.getClients() → Firestore
 
 // Demain, API REST
